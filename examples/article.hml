@@ -1,0 +1,167 @@
+Document {
+    Head {
+        Meta {
+            charset: utf-8
+        }
+
+        Meta {
+            name: viewport
+            content: "width=device-width, initial-scale=1"
+        }
+
+        Meta {
+            name: description
+            content: "Example article page written in HML"
+        }
+    }
+
+    Body {
+        Box {
+            class: article-page
+            background-color: #f9fafb
+            color: #111827
+            padding: 32
+            min-height: 100vh
+
+            Header {
+                max-width: 840
+                margin: 0
+                margin-bottom: 24
+
+                Paragraph {
+                    content: "Engineering / Markup"
+                    color: #4f46e5
+                    font-size: 14
+                    font-weight: 700
+                    letter-spacing: 0.08em
+                    text-transform: uppercase
+                    margin-bottom: 12
+                }
+
+                H1 {
+                    content: "Designing a Cleaner Markup Language"
+                    font-size: 56
+                    font-weight: 800
+                    line-height: 1.1
+                    margin-bottom: 16
+                }
+
+                Paragraph {
+                    content: "An opinionated look at building HTML-like documents with better readability and first-class styling."
+                    color: #6b7280
+                    font-size: 18
+                    line-height: 1.7
+                }
+            }
+
+            Main {
+                Article {
+                    max-width: 840
+                    background-color: white
+                    border-radius: 16
+                    padding: 32
+                    box-shadow: "0 10px 30px rgba(0, 0, 0, 0.08)"
+
+                    Paragraph {
+                        content: "Traditional HTML is powerful, but its opening and closing tags add visual noise when authoring highly structured content. HML explores what happens when you keep the browser output but redesign the authoring syntax around blocks and direct styling."
+                        font-size: 18
+                        line-height: 1.8
+                        color: #374151
+                        margin-bottom: 20
+                    }
+
+                    H2 {
+                        content: "Why HML?"
+                        font-size: 32
+                        font-weight: 800
+                        margin-top: 12
+                        margin-bottom: 12
+                    }
+
+                    Paragraph {
+                        content: "HML keeps the underlying document model familiar while making templates easier to scan. Elements become block scopes, attributes remain concise, and CSS properties live directly beside structure instead of in a separate stylesheet during authoring."
+                        font-size: 17
+                        line-height: 1.8
+                        color: #374151
+                        margin-bottom: 20
+                    }
+
+                    H2 {
+                        content: "Core ideas"
+                        font-size: 32
+                        font-weight: 800
+                        margin-top: 24
+                        margin-bottom: 12
+                    }
+
+                    List {
+                        margin-bottom: 24
+                        padding-left: 24
+
+                        ListItem {
+                            content: "Curly-brace blocks replace angle-bracket syntax."
+                            margin-bottom: 8
+                            line-height: 1.7
+                            color: #374151
+                        }
+
+                        ListItem {
+                            content: "Known CSS properties are compiled into scoped generated classes."
+                            margin-bottom: 8
+                            line-height: 1.7
+                            color: #374151
+                        }
+
+                        ListItem {
+                            content: "HTML attributes pass through directly to the rendered output."
+                            margin-bottom: 8
+                            line-height: 1.7
+                            color: #374151
+                        }
+                    }
+
+                    Box {
+                        background-color: #eef2ff
+                        border-radius: 12
+                        padding: 20
+                        margin-top: 24
+                        margin-bottom: 24
+
+                        H3 {
+                            content: "Editor note"
+                            font-size: 22
+                            font-weight: 700
+                            margin-bottom: 8
+                            color: #312e81
+                        }
+
+                        Paragraph {
+                            content: "This example is useful for validating nested content blocks, typography rules, lists, and card-style sections in the compiler output."
+                            color: #4338ca
+                            line-height: 1.7
+                        }
+                    }
+
+                    Paragraph {
+                        content: "Because HML compiles to static HTML and CSS, it avoids introducing a browser runtime while still letting you author documents in a cleaner syntax."
+                        font-size: 17
+                        line-height: 1.8
+                        color: #374151
+                    }
+                }
+            }
+
+            Footer {
+                max-width: 840
+                margin-top: 24
+
+                Link {
+                    href: "https://example.com"
+                    content: "Read the full specification"
+                    color: #4f46e5
+                    font-weight: 600
+                }
+            }
+        }
+    }
+}

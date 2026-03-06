@@ -1,0 +1,305 @@
+Document {
+    Head {
+        Meta {
+            charset: utf-8
+        }
+
+        Meta {
+            name: viewport
+            content: "width=device-width, initial-scale=1"
+        }
+
+        Style {
+            content: "body { margin: 0; font-family: Inter, system-ui, sans-serif; }"
+        }
+    }
+
+    Body {
+        Box {
+            id: dashboard
+            background-color: #f8fafc
+            color: #0f172a
+            min-height: 100vh
+            padding: 32
+
+            Header {
+                margin-bottom: 24
+
+                H1 {
+                    content: "Analytics Dashboard"
+                    font-size: 40
+                    font-weight: 800
+                    line-height: 1.1
+                    color: #0f172a
+                }
+
+                Paragraph {
+                    content: "A sample HML page with cards and a metrics table."
+                    color: #475569
+                    font-size: 16
+                    line-height: 1.6
+                    margin-top: 8
+                }
+            }
+
+            Section {
+                display: grid
+                gap: 16
+                margin-bottom: 24
+
+                Box {
+                    background-color: white
+                    border-radius: 16
+                    padding: 20
+                    box-shadow: "0 8px 30px rgba(15, 23, 42, 0.08)"
+
+                    Span {
+                        content: "Revenue"
+                        display: block
+                        color: #64748b
+                        font-size: 14
+                        margin-bottom: 8
+                    }
+
+                    H2 {
+                        content: "$128,400"
+                        font-size: 28
+                        font-weight: 800
+                        color: #0f172a
+                    }
+
+                    Paragraph {
+                        content: "+12.4% compared to last month"
+                        color: #16a34a
+                        font-size: 14
+                        margin-top: 8
+                    }
+                }
+
+                Box {
+                    background-color: white
+                    border-radius: 16
+                    padding: 20
+                    box-shadow: "0 8px 30px rgba(15, 23, 42, 0.08)"
+
+                    Span {
+                        content: "Active Users"
+                        display: block
+                        color: #64748b
+                        font-size: 14
+                        margin-bottom: 8
+                    }
+
+                    H2 {
+                        content: "8,942"
+                        font-size: 28
+                        font-weight: 800
+                        color: #0f172a
+                    }
+
+                    Paragraph {
+                        content: "+4.1% week over week"
+                        color: #2563eb
+                        font-size: 14
+                        margin-top: 8
+                    }
+                }
+
+                Box {
+                    background-color: white
+                    border-radius: 16
+                    padding: 20
+                    box-shadow: "0 8px 30px rgba(15, 23, 42, 0.08)"
+
+                    Span {
+                        content: "Conversion Rate"
+                        display: block
+                        color: #64748b
+                        font-size: 14
+                        margin-bottom: 8
+                    }
+
+                    H2 {
+                        content: "3.82%"
+                        font-size: 28
+                        font-weight: 800
+                        color: #0f172a
+                    }
+
+                    Paragraph {
+                        content: "-0.3% from last week"
+                        color: #dc2626
+                        font-size: 14
+                        margin-top: 8
+                    }
+                }
+            }
+
+            Section {
+                background-color: white
+                border-radius: 20
+                padding: 24
+                box-shadow: "0 12px 40px rgba(15, 23, 42, 0.08)"
+
+                Header {
+                    margin-bottom: 16
+
+                    H2 {
+                        content: "Top Campaigns"
+                        font-size: 24
+                        font-weight: 800
+                        color: #0f172a
+                    }
+
+                    Paragraph {
+                        content: "Performance summary for this week's leading campaigns."
+                        color: #64748b
+                        font-size: 15
+                        line-height: 1.6
+                        margin-top: 6
+                    }
+                }
+
+                Table {
+                    width: 100%
+                    border-collapse: collapse
+
+                    TableHead {
+                        TableRow {
+                            TableHeader {
+                                content: "Campaign"
+                                text-align: left
+                                font-size: 14
+                                font-weight: 700
+                                color: #475569
+                                padding: 12
+                                border-bottom: "1px solid #e2e8f0"
+                            }
+
+                            TableHeader {
+                                content: "Status"
+                                text-align: left
+                                font-size: 14
+                                font-weight: 700
+                                color: #475569
+                                padding: 12
+                                border-bottom: "1px solid #e2e8f0"
+                            }
+
+                            TableHeader {
+                                content: "CTR"
+                                text-align: left
+                                font-size: 14
+                                font-weight: 700
+                                color: #475569
+                                padding: 12
+                                border-bottom: "1px solid #e2e8f0"
+                            }
+
+                            TableHeader {
+                                content: "Spend"
+                                text-align: left
+                                font-size: 14
+                                font-weight: 700
+                                color: #475569
+                                padding: 12
+                                border-bottom: "1px solid #e2e8f0"
+                            }
+                        }
+                    }
+
+                    TableBody {
+                        TableRow {
+                            TableCell {
+                                content: "Spring Launch"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #0f172a
+                            }
+
+                            TableCell {
+                                content: "Running"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #16a34a
+                                font-weight: 700
+                            }
+
+                            TableCell {
+                                content: "4.8%"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #0f172a
+                            }
+
+                            TableCell {
+                                content: "$12,400"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #0f172a
+                            }
+                        }
+
+                        TableRow {
+                            TableCell {
+                                content: "Retargeting Q2"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #0f172a
+                            }
+
+                            TableCell {
+                                content: "Paused"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #f59e0b
+                                font-weight: 700
+                            }
+
+                            TableCell {
+                                content: "2.9%"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #0f172a
+                            }
+
+                            TableCell {
+                                content: "$7,180"
+                                padding: 14
+                                border-bottom: "1px solid #f1f5f9"
+                                color: #0f172a
+                            }
+                        }
+
+                        TableRow {
+                            TableCell {
+                                content: "Brand Awareness"
+                                padding: 14
+                                color: #0f172a
+                            }
+
+                            TableCell {
+                                content: "Draft"
+                                padding: 14
+                                color: #64748b
+                                font-weight: 700
+                            }
+
+                            TableCell {
+                                content: "—"
+                                padding: 14
+                                color: #0f172a
+                            }
+
+                            TableCell {
+                                content: "$0"
+                                padding: 14
+                                color: #0f172a
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

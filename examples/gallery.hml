@@ -1,0 +1,460 @@
+Document {
+    Head {
+        Meta {
+            charset: utf-8
+        }
+
+        Meta {
+            name: viewport
+            content: "width=device-width, initial-scale=1"
+        }
+
+        Meta {
+            name: description
+            content: "Gallery example with rich CSS styling in HML"
+        }
+    }
+
+    Body {
+        Box {
+            background: "linear-gradient(180deg, #0f172a, #111827 40%, #1e293b)"
+            color: white
+            min-height: 100vh
+            padding: 40
+
+            Header {
+                width: 960
+                margin: "0 auto"
+                margin-bottom: 32
+                text-align: center
+
+                Paragraph {
+                    content: "Showcase / Gallery"
+                    color: #a5b4fc
+                    font-size: 14
+                    font-weight: 700
+                    letter-spacing: 0.08em
+                    text-transform: uppercase
+                    margin-bottom: 12
+                }
+
+                H1 {
+                    content: "A styled image gallery written in HML"
+                    font-size: 52
+                    font-weight: 800
+                    line-height: 1.1
+                    margin-bottom: 16
+                }
+
+                Paragraph {
+                    content: "This example exercises gradients, shadows, spacing, cards, tags, and button-like links to validate CSS output."
+                    color: #cbd5e1
+                    font-size: 18
+                    line-height: 1.7
+                    width: 760
+                    margin: "0 auto"
+                }
+            }
+
+            Main {
+                width: 1120
+                margin: "0 auto"
+
+                Section {
+                    background-color: "rgba(255,255,255,0.06)"
+                    border: "1px solid rgba(255,255,255,0.12)"
+                    border-radius: 24
+                    padding: 24
+                    box-shadow: "0 20px 60px rgba(0, 0, 0, 0.28)"
+                    backdrop-filter: "blur(10px)"
+                    margin-bottom: 28
+
+                    Box {
+                        display: flex
+                        justify-content: space-between
+                        align-items: center
+                        margin-bottom: 20
+
+                        Box {
+                            H2 {
+                                content: "Featured Collections"
+                                font-size: 30
+                                font-weight: 800
+                                color: white
+                                margin-bottom: 8
+                            }
+
+                            Paragraph {
+                                content: "Browse curated sets of visual inspiration with a polished card layout."
+                                color: #cbd5e1
+                                font-size: 16
+                                line-height: 1.6
+                            }
+                        }
+
+                        Box {
+                            display: flex
+                            gap: 12
+
+                            Link {
+                                href: "#all"
+                                content: "All"
+                                background-color: white
+                                color: #0f172a
+                                padding: 10
+                                border-radius: 9999
+                                font-size: 14
+                                font-weight: 700
+                            }
+
+                            Link {
+                                href: "#nature"
+                                content: "Nature"
+                                border: "1px solid rgba(255,255,255,0.18)"
+                                color: white
+                                padding: 10
+                                border-radius: 9999
+                                font-size: 14
+                                font-weight: 700
+                            }
+
+                            Link {
+                                href: "#urban"
+                                content: "Urban"
+                                border: "1px solid rgba(255,255,255,0.18)"
+                                color: white
+                                padding: 10
+                                border-radius: 9999
+                                font-size: 14
+                                font-weight: 700
+                            }
+                        }
+                    }
+
+                    Box {
+                        display: grid
+                        gap: 20
+
+                        Article {
+                            background-color: "rgba(15,23,42,0.75)"
+                            border-radius: 22
+                            overflow: hidden
+                            box-shadow: "0 18px 40px rgba(15, 23, 42, 0.45)"
+
+                            Image {
+                                src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+                                alt: "Mountain landscape"
+                                width: 100%
+                                height: 320
+                            }
+
+                            Box {
+                                padding: 22
+
+                                Box {
+                                    display: flex
+                                    justify-content: space-between
+                                    align-items: center
+                                    margin-bottom: 12
+
+                                    H3 {
+                                        content: "Northern Peaks"
+                                        font-size: 24
+                                        font-weight: 800
+                                        color: white
+                                    }
+
+                                    Span {
+                                        content: "Featured"
+                                        background-color: #4f46e5
+                                        color: white
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 12
+                                        font-weight: 700
+                                    }
+                                }
+
+                                Paragraph {
+                                    content: "A dramatic alpine collection focused on cold light, contrast, and expansive natural scenery."
+                                    color: #cbd5e1
+                                    line-height: 1.7
+                                    margin-bottom: 16
+                                }
+
+                                Box {
+                                    display: flex
+                                    gap: 10
+                                    margin-bottom: 18
+
+                                    Span {
+                                        content: "Landscape"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+
+                                    Span {
+                                        content: "Travel"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+
+                                    Span {
+                                        content: "Editorial"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+                                }
+
+                                Link {
+                                    href: "https://example.com/gallery/northern-peaks"
+                                    content: "View collection"
+                                    color: #a5b4fc
+                                    font-weight: 700
+                                }
+                            }
+                        }
+
+                        Article {
+                            background-color: "rgba(15,23,42,0.75)"
+                            border-radius: 22
+                            overflow: hidden
+                            box-shadow: "0 18px 40px rgba(15, 23, 42, 0.45)"
+
+                            Image {
+                                src: "https://images.unsplash.com/photo-1494526585095-c41746248156"
+                                alt: "Modern city skyline"
+                                width: 100%
+                                height: 320
+                            }
+
+                            Box {
+                                padding: 22
+
+                                Box {
+                                    display: flex
+                                    justify-content: space-between
+                                    align-items: center
+                                    margin-bottom: 12
+
+                                    H3 {
+                                        content: "City After Dark"
+                                        font-size: 24
+                                        font-weight: 800
+                                        color: white
+                                    }
+
+                                    Span {
+                                        content: "New"
+                                        background-color: #ec4899
+                                        color: white
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 12
+                                        font-weight: 700
+                                    }
+                                }
+
+                                Paragraph {
+                                    content: "An urban-focused set featuring neon reflections, late-night architecture, and cinematic framing."
+                                    color: #cbd5e1
+                                    line-height: 1.7
+                                    margin-bottom: 16
+                                }
+
+                                Box {
+                                    display: flex
+                                    gap: 10
+                                    margin-bottom: 18
+
+                                    Span {
+                                        content: "Urban"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+
+                                    Span {
+                                        content: "Night"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+
+                                    Span {
+                                        content: "Architecture"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+                                }
+
+                                Link {
+                                    href: "https://example.com/gallery/city-after-dark"
+                                    content: "View collection"
+                                    color: #f9a8d4
+                                    font-weight: 700
+                                }
+                            }
+                        }
+
+                        Article {
+                            background-color: "rgba(15,23,42,0.75)"
+                            border-radius: 22
+                            overflow: hidden
+                            box-shadow: "0 18px 40px rgba(15, 23, 42, 0.45)"
+
+                            Image {
+                                src: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e"
+                                alt: "Coastal landscape at sunset"
+                                width: 100%
+                                height: 320
+                            }
+
+                            Box {
+                                padding: 22
+
+                                Box {
+                                    display: flex
+                                    justify-content: space-between
+                                    align-items: center
+                                    margin-bottom: 12
+
+                                    H3 {
+                                        content: "Golden Coast"
+                                        font-size: 24
+                                        font-weight: 800
+                                        color: white
+                                    }
+
+                                    Span {
+                                        content: "Popular"
+                                        background-color: #f59e0b
+                                        color: white
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 12
+                                        font-weight: 700
+                                    }
+                                }
+
+                                Paragraph {
+                                    content: "Warm-toned imagery built around shorelines, sunsets, and serene environmental composition."
+                                    color: #cbd5e1
+                                    line-height: 1.7
+                                    margin-bottom: 16
+                                }
+
+                                Box {
+                                    display: flex
+                                    gap: 10
+                                    margin-bottom: 18
+
+                                    Span {
+                                        content: "Coastal"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+
+                                    Span {
+                                        content: "Sunset"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+
+                                    Span {
+                                        content: "Nature"
+                                        background-color: "rgba(255,255,255,0.08)"
+                                        color: #e2e8f0
+                                        padding: 8
+                                        border-radius: 9999
+                                        font-size: 13
+                                    }
+                                }
+
+                                Link {
+                                    href: "https://example.com/gallery/golden-coast"
+                                    content: "View collection"
+                                    color: #fcd34d
+                                    font-weight: 700
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Section {
+                    background-color: white
+                    color: #0f172a
+                    border-radius: 24
+                    padding: 28
+                    box-shadow: "0 18px 50px rgba(15, 23, 42, 0.18)"
+
+                    Box {
+                        display: flex
+                        justify-content: space-between
+                        align-items: center
+                        margin-bottom: 16
+
+                        H2 {
+                            content: "Why this example matters"
+                            font-size: 28
+                            font-weight: 800
+                            color: #0f172a
+                        }
+
+                        Link {
+                            href: "https://example.com/gallery"
+                            content: "Explore all galleries"
+                            background-color: #4f46e5
+                            color: white
+                            padding: 12
+                            border-radius: 12
+                            font-weight: 700
+                        }
+                    }
+
+                    Paragraph {
+                        content: "Use this file to validate rich visual styling in the compiler, including gradients, transparency, blur, shadows, rounded cards, pill tags, and nested call-to-action elements."
+                        color: #475569
+                        font-size: 16
+                        line-height: 1.8
+                    }
+                }
+            }
+
+            Footer {
+                width: 1120
+                margin: "24 auto 0 auto"
+                text-align: center
+
+                Paragraph {
+                    content: "Gallery demo generated from HML."
+                    color: #94a3b8
+                    font-size: 14
+                }
+            }
+        }
+    }
+}

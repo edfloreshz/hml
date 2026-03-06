@@ -1,0 +1,195 @@
+Document {
+    Head {
+        Meta {
+            charset: utf-8
+        }
+
+        Meta {
+            name: viewport
+            content: "width=device-width, initial-scale=1"
+        }
+
+        Meta {
+            name: description
+            content: "Contact form example written in HML"
+        }
+    }
+
+    Body {
+        Box {
+            background-color: #f8fafc
+            min-height: 100vh
+            padding: 48
+
+            Main {
+                width: 720
+                margin: auto
+                background-color: white
+                border-radius: 16
+                padding: 32
+                box-shadow: "0 12px 32px rgba(15, 23, 42, 0.08)"
+
+                Header {
+                    margin-bottom: 24
+
+                    H1 {
+                        content: "Contact Us"
+                        font-size: 40
+                        font-weight: 800
+                        color: #0f172a
+                        margin-bottom: 8
+                    }
+
+                    Paragraph {
+                        content: "Send us a message and we will get back to you soon."
+                        font-size: 16
+                        line-height: 1.6
+                        color: #475569
+                    }
+                }
+
+                Form {
+                    action: "/contact"
+                    method: post
+
+                    Box {
+                        display: grid
+                        gap: 20
+
+                        Box {
+                            Label {
+                                for: full-name
+                                content: "Full name"
+                                display: block
+                                font-weight: 700
+                                color: #1e293b
+                                margin-bottom: 8
+                            }
+
+                            Input {
+                                id: full-name
+                                name: fullName
+                                type: text
+                                placeholder: "Jane Doe"
+                                width: 100%
+                                padding: 12
+                                border: "1px solid #cbd5e1"
+                                border-radius: 10
+                                font-size: 16
+                            }
+                        }
+
+                        Box {
+                            Label {
+                                for: email
+                                content: "Email address"
+                                display: block
+                                font-weight: 700
+                                color: #1e293b
+                                margin-bottom: 8
+                            }
+
+                            Input {
+                                id: email
+                                name: email
+                                type: email
+                                placeholder: "jane@example.com"
+                                width: 100%
+                                padding: 12
+                                border: "1px solid #cbd5e1"
+                                border-radius: 10
+                                font-size: 16
+                            }
+                        }
+
+                        Box {
+                            Label {
+                                for: topic
+                                content: "Topic"
+                                display: block
+                                font-weight: 700
+                                color: #1e293b
+                                margin-bottom: 8
+                            }
+
+                            Select {
+                                id: topic
+                                name: topic
+                                width: 100%
+                                padding: 12
+                                border: "1px solid #cbd5e1"
+                                border-radius: 10
+                                font-size: 16
+
+                                Option {
+                                    value: general
+                                    content: "General inquiry"
+                                }
+
+                                Option {
+                                    value: support
+                                    content: "Support"
+                                }
+
+                                Option {
+                                    value: sales
+                                    content: "Sales"
+                                }
+                            }
+                        }
+
+                        Box {
+                            Label {
+                                for: message
+                                content: "Message"
+                                display: block
+                                font-weight: 700
+                                color: #1e293b
+                                margin-bottom: 8
+                            }
+
+                            TextArea {
+                                id: message
+                                name: message
+                                rows: 6
+                                placeholder: "How can we help?"
+                                width: 100%
+                                padding: 12
+                                border: "1px solid #cbd5e1"
+                                border-radius: 10
+                                font-size: 16
+                                line-height: 1.5
+                            }
+                        }
+
+                        Box {
+                            display: flex
+                            justify-content: space-between
+                            align-items: center
+                            margin-top: 8
+
+                            Paragraph {
+                                content: "We usually reply within 1-2 business days."
+                                font-size: 14
+                                color: #64748b
+                            }
+
+                            Button {
+                                type: submit
+                                content: "Send message"
+                                background-color: #4f46e5
+                                color: white
+                                padding: 12
+                                border-radius: 10
+                                border: none
+                                font-size: 16
+                                font-weight: 700
+                                cursor: pointer
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
