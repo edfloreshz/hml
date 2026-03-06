@@ -1,2 +1,12 @@
 /target
 /dist
+/criterion
+**/.DS_Store
+.DS_Store
+/.idea
+/.vscode
+/.zed
+*.swp
+*.swo
+*.tmp
+*.temp
