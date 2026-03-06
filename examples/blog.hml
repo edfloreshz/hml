@@ -369,7 +369,7 @@ Document {
       Footer {
         width: 960px
         margin: "0 auto"
-        padding: 0 40px 40px 40px
+        padding: "0 40px 40px 40px"
 
         Paragraph {
           color: #64748b

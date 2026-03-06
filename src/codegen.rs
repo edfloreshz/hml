@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::hash::{Hash, Hasher};
 
-use crate::ast::{Document, ElementNode, Node, Property, Value};
+use crate::ast::{Attribute, Document, ElementNode, Node, Property, Value};
 use crate::diagnostics::{Diagnostic, Diagnostics, SourceLocation};
 
 #[derive(Debug, Clone)]
@@ -45,6 +45,14 @@ impl<'a> CodeGenerator<'a> {
     fn generate(&mut self, document: &Document) -> CodegenOutput {
         let mut html = String::new();
 
+        if document
+            .nodes
+            .iter()
+            .any(|node| matches!(node, Node::Element(element) if element.name == "Document"))
+        {
+            html.push_str("<!DOCTYPE html>\n");
+        }
+
         for (index, node) in document.nodes.iter().enumerate() {
             self.write_node(node, 0, &mut html);
 
@@ -84,7 +92,10 @@ impl<'a> CodeGenerator<'a> {
     }
 
     fn write_node(&mut self, node: &Node, indent: usize, out: &mut String) {
-        self.write_element(&node.element, indent, out);
+        match node {
+            Node::Element(element) => self.write_element(element, indent, out),
+            Node::Text(text) => self.write_text_node(text.value.as_str(), indent, out),
+        }
     }
 
     fn write_element(&mut self, element: &ElementNode, indent: usize, out: &mut String) {
@@ -109,75 +120,75 @@ impl<'a> CodeGenerator<'a> {
 
         out.push('>');
 
-        let has_text = analyzed.text_content.is_some();
         let has_children = !element.children.is_empty();
 
-        match (has_text, has_children) {
-            (false, false) => {
-                write!(out, "</{}>", html_tag).unwrap();
-            }
-            (true, false) => {
-                out.push_str(&escape_html_text(
-                    analyzed.text_content.as_deref().unwrap_or_default(),
-                ));
-                write!(out, "</{}>", html_tag).unwrap();
-            }
-            (false, true) => {
-                out.push('\n');
+        if !has_children {
+            write!(out, "</{}>", html_tag).unwrap();
+            return;
+        }
 
-                for (index, child) in element.children.iter().enumerate() {
-                    self.write_node(child, indent + 1, out);
+        let children_are_all_text = element
+            .children
+            .iter()
+            .all(|child| matches!(child, Node::Text(_)));
 
-                    if index + 1 < element.children.len() {
-                        out.push('\n');
-                    }
+        if children_are_all_text {
+            for child in &element.children {
+                if let Node::Text(text) = child {
+                    out.push_str(&escape_html_text(&text.value));
                 }
-
-                out.push('\n');
-                write!(out, "{}</{}>", indent_str, html_tag).unwrap();
             }
-            (true, true) => {
-                out.push('\n');
-                write!(
-                    out,
-                    "{}    {}",
-                    indent_str,
-                    escape_html_text(analyzed.text_content.as_deref().unwrap_or_default())
-                )
-                .unwrap();
 
-                for child in &element.children {
-                    out.push('\n');
-                    self.write_node(child, indent + 1, out);
-                }
+            write!(out, "</{}>", html_tag).unwrap();
+            return;
+        }
 
+        out.push('\n');
+
+        for (index, child) in element.children.iter().enumerate() {
+            self.write_node(child, indent + 1, out);
+
+            if index + 1 < element.children.len() {
                 out.push('\n');
-                write!(out, "{}</{}>", indent_str, html_tag).unwrap();
             }
         }
+
+        out.push('\n');
+        write!(out, "{}</{}>", indent_str, html_tag).unwrap();
+    }
+
+    fn write_text_node(&mut self, value: &str, indent: usize, out: &mut String) {
+        let indent_str = "    ".repeat(indent);
+        write!(out, "{}{}", indent_str, escape_html_text(value)).unwrap();
     }
 
     fn analyze_element(&mut self, element: &ElementNode) -> AnalyzedElement {
         let mut attributes = BTreeMap::new();
         let mut styles = BTreeMap::new();
-        let mut text_content = None;
 
-        for property in &element.properties {
-            let key = property.name.trim().to_string();
-            let raw_value = property.value.as_str().to_string();
-
-            if key == "content" && element.name != "Meta" {
-                text_content = Some(raw_value);
-                continue;
-            }
-
-            if is_css_property(&key) {
-                styles.insert(key, normalize_css_value(&property.name, &property.value));
-                continue;
-            }
+        for attribute in &element.attributes {
+            let key = attribute.name.trim().to_string();
+            let raw_value = attribute.value.as_str().to_string();
 
             if is_known_html_attribute(&key) || is_likely_html_attribute(&key) {
                 attributes.insert(key, raw_value);
+                continue;
+            }
+
+            self.diagnostics.push(Diagnostic::unknown_property(
+                self.location_for_attribute(attribute),
+                element.name.clone(),
+                &attribute.name,
+            ));
+
+            attributes.insert(key, raw_value);
+        }
+
+        for property in &element.properties {
+            let key = property.name.trim().to_string();
+
+            if is_css_property(&key) {
+                styles.insert(key, normalize_css_value(&property.name, &property.value));
                 continue;
             }
 
@@ -186,8 +197,6 @@ impl<'a> CodeGenerator<'a> {
                 element.name.clone(),
                 &property.name,
             ));
-
-            attributes.insert(key, raw_value);
         }
 
         if element.name == "Link" && !attributes.contains_key("href") {
@@ -220,7 +229,6 @@ impl<'a> CodeGenerator<'a> {
 
         AnalyzedElement {
             attributes,
-            text_content,
             generated_class,
         }
     }
@@ -274,6 +282,14 @@ impl<'a> CodeGenerator<'a> {
         )
     }
 
+    fn location_for_attribute(&self, attribute: &Attribute) -> SourceLocation {
+        SourceLocation::new(
+            self.file_name.clone(),
+            attribute.span.line.max(1),
+            attribute.span.column.max(1),
+        )
+    }
+
     fn location_for_property(&self, property: &Property) -> SourceLocation {
         SourceLocation::new(
             self.file_name.clone(),
@@ -285,7 +301,6 @@ impl<'a> CodeGenerator<'a> {
 
 struct AnalyzedElement {
     attributes: BTreeMap<String, String>,
-    text_content: Option<String>,
     generated_class: Option<String>,
 }
 
@@ -427,6 +442,7 @@ fn map_element_name(name: &str) -> &str {
         "TableRow" => "tr",
         "TableHeader" => "th",
         "TableCell" => "td",
+        "Title" => "title",
         _ => name,
     }
 }

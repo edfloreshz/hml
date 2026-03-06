@@ -31,7 +31,7 @@ Box {
   color: #111111
 
   Paragraph {
-    content: "Hello compiler"
+    "Hello compiler"
   }
 }
 "#,
@@ -75,7 +75,7 @@ fn compile_file_reads_source_from_disk() {
         r#"
 Box {
   Paragraph {
-    content: "Hello from file"
+    "Hello from file"
   }
 }
 "#,
@@ -98,11 +98,21 @@ fn compile_to_files_writes_html_and_css_outputs() {
     write_file(
         &input,
         r#"
-Box {
-  color: #222222
+Document {
+  Head {
+    Title {
+      "Example"
+    }
+  }
 
-  Paragraph {
-    content: "Hello output files"
+  Body {
+    Box {
+      color: #222222
+
+      Paragraph {
+        "Hello output files"
+      }
+    }
   }
 }
 "#,
@@ -135,8 +145,17 @@ fn compile_to_files_skips_writing_outputs_when_compilation_fails() {
     write_file(
         &input,
         r#"
-div {
-  color:
+Document {
+  Head {
+    Meta[charset: "utf-8"]
+    Title "Broken"
+  }
+
+  Body {
+    Link[href: "https://example.com"] {
+      color:
+    }
+  }
 }
 "#,
     );
@@ -160,7 +179,7 @@ fn compile_directory_writes_outputs_for_all_hml_files_recursively() {
         r#"
 Box {
   Paragraph {
-    content: "Root file"
+    "Root file"
   }
 }
 "#,
@@ -171,7 +190,7 @@ Box {
         r#"
 Box {
   Paragraph {
-    content: "Nested file"
+    "Nested file"
   }
 }
 "#,
@@ -203,7 +222,7 @@ fn compile_path_to_dir_handles_single_file_input() {
         r#"
 Box {
   Paragraph {
-    content: "Single path compile"
+    "Single path compile"
   }
 }
 "#,
@@ -228,7 +247,7 @@ fn compile_path_to_dir_handles_directory_input() {
         r#"
 Box {
   Paragraph {
-    content: "Home"
+    "Home"
   }
 }
 "#,
@@ -239,7 +258,7 @@ Box {
         r#"
 Box {
   Paragraph {
-    content: "Post"
+    "Post"
   }
 }
 "#,
@@ -267,7 +286,7 @@ fn compile_directory_collects_diagnostics_and_skips_invalid_files() {
         r#"
 Box {
   Paragraph {
-    content: "Good"
+    "Good"
   }
 }
 "#,
@@ -276,8 +295,17 @@ Box {
     write_file(
         &input_dir.join("bad.hml"),
         r#"
-div {
-  color:
+Document {
+  Head {
+    Meta[charset: "utf-8"]
+    Title "Broken"
+  }
+
+  Body {
+    Link[href: "https://example.com"] {
+      color:
+    }
+  }
 }
 "#,
     );
@@ -292,4 +320,99 @@ div {
     assert!(out_dir.join("good.css").exists());
     assert!(!out_dir.join("bad.html").exists());
     assert!(!out_dir.join("bad.css").exists());
+}
+
+#[test]
+fn compile_supports_inline_text_on_simple_elements() {
+    let result = compile(
+        r#"
+Document {
+  Head {
+    Title "Acme UI"
+  }
+
+  Body {
+    Paragraph "Hello inline text"
+  }
+}
+"#,
+        "inline-text.hml",
+    );
+
+    assert!(result.is_success());
+    assert!(!result.diagnostics.has_errors());
+
+    let html = result.html().expect("expected generated html");
+    assert!(html.contains("<title>"));
+    assert!(html.contains("Acme UI"));
+    assert!(html.contains("</title>"));
+    assert!(html.contains("<p>"));
+    assert!(html.contains("Hello inline text"));
+    assert!(html.contains("</p>"));
+}
+
+#[test]
+fn compile_supports_bracket_attributes_and_inline_text() {
+    let result = compile(
+        r#"
+Document {
+  Head {
+    Meta[charset: "utf-8"]
+    Title "Acme UI"
+  }
+
+  Body {
+    Link[href: "https://example.com"] "Read more"
+  }
+}
+"#,
+        "attrs-inline-text.hml",
+    );
+
+    assert!(result.is_success());
+    assert!(!result.diagnostics.has_errors());
+
+    let html = result.html().expect("expected generated html");
+    assert!(html.contains(r#"<meta charset="utf-8">"#));
+    assert!(html.contains(r#"<a href="https://example.com">Read more</a>"#));
+}
+
+#[test]
+fn compile_supports_multiline_bracket_attributes() {
+    let result = compile(
+        r#"
+Document {
+  Head {
+    Title "Contact"
+  }
+
+  Body {
+    Form[action: "/contact", method: "post"] {
+      Input[
+        id: "email",
+        name: "email",
+        type: "email",
+        placeholder: "you@example.com"
+      ] {
+        width: 100%
+      }
+    }
+  }
+}
+"#,
+        "multiline-attrs.hml",
+    );
+
+    assert!(result.is_success());
+    assert!(!result.diagnostics.has_errors());
+
+    let html = result.html().expect("expected generated html");
+    let css = result.css().expect("expected generated css");
+
+    assert!(html.contains(r#"<form action="/contact" method="post">"#));
+    assert!(html.contains(r#"id="email""#));
+    assert!(html.contains(r#"name="email""#));
+    assert!(html.contains(r#"type="email""#));
+    assert!(html.contains(r#"placeholder="you@example.com""#));
+    assert!(!css.is_empty());
 }

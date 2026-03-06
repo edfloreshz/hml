@@ -1,4 +1,4 @@
-use crate::ast::{Document, ElementNode, Node, Property, Span, Value};
+use crate::ast::{Attribute, Document, ElementNode, Node, Property, Span, Value};
 use crate::diagnostics::{Diagnostic, Diagnostics, SourceLocation};
 use crate::lexer::{Token, TokenKind};
 
@@ -40,6 +40,10 @@ impl Parser {
     }
 
     fn parse_node(&mut self) -> Option<Node> {
+        if self.check(TokenKind::String) {
+            return self.parse_text_node();
+        }
+
         self.parse_element().map(Node::new)
     }
 
@@ -48,30 +52,103 @@ impl Parser {
         let name = name_token.lexeme.clone();
         let span = Span::new(name_token.line(), name_token.column());
 
-        self.consume(TokenKind::LBrace, "expected '{' after element name")?;
+        let attributes = self.parse_attributes();
 
-        let mut properties = Vec::new();
-        let mut children = Vec::new();
+        if self.check(TokenKind::String) {
+            let text = self.parse_text_node()?;
+            return Some(ElementNode::new(
+                name,
+                attributes,
+                Vec::new(),
+                vec![text],
+                span,
+            ));
+        }
 
-        while !self.check(TokenKind::RBrace) && !self.is_at_end() {
-            if self.is_property_start() {
-                if let Some(property) = self.parse_property() {
-                    properties.push(property);
+        if self.check(TokenKind::LBrace) {
+            self.advance();
+
+            let mut properties = Vec::new();
+            let mut children = Vec::new();
+
+            while !self.check(TokenKind::RBrace) && !self.is_at_end() {
+                if self.is_property_start() {
+                    if let Some(property) = self.parse_property() {
+                        properties.push(property);
+                    } else {
+                        self.synchronize_in_block();
+                    }
+                } else if self.check(TokenKind::String) {
+                    if let Some(text_node) = self.parse_text_node() {
+                        children.push(text_node);
+                    } else {
+                        self.synchronize_in_block();
+                    }
+                } else if self.check(TokenKind::Identifier) {
+                    if let Some(child) = self.parse_node() {
+                        children.push(child);
+                    } else {
+                        self.synchronize_in_block();
+                    }
                 } else {
-                    self.synchronize_in_block();
+                    let token = self.peek().clone();
+                    self.push_error_at_token(
+                        &token,
+                        format!(
+                            "unexpected token '{}'; expected property, text, or child element.",
+                            token.lexeme
+                        ),
+                    );
+                    self.advance();
                 }
-            } else if self.check(TokenKind::Identifier) {
-                if let Some(child) = self.parse_node() {
-                    children.push(child);
-                } else {
-                    self.synchronize_in_block();
-                }
-            } else {
+            }
+
+            if self
+                .consume(TokenKind::RBrace, "expected '}' after element body")
+                .is_none()
+            {
+                return Some(ElementNode::new(
+                    name, attributes, properties, children, span,
+                ));
+            }
+
+            return Some(ElementNode::new(
+                name, attributes, properties, children, span,
+            ));
+        }
+
+        Some(ElementNode::new(
+            name,
+            attributes,
+            Vec::new(),
+            Vec::new(),
+            span,
+        ))
+    }
+
+    fn parse_attributes(&mut self) -> Vec<Attribute> {
+        if !self.check(TokenKind::LBracket) {
+            return Vec::new();
+        }
+
+        self.advance();
+
+        let mut attributes = Vec::new();
+
+        while !self.check(TokenKind::RBracket) && !self.is_at_end() {
+            match self.parse_attribute() {
+                Some(attribute) => attributes.push(attribute),
+                None => self.synchronize_in_attribute_list(),
+            }
+
+            if self.check(TokenKind::Comma) {
+                self.advance();
+            } else if !self.check(TokenKind::RBracket) {
                 let token = self.peek().clone();
                 self.push_error_at_token(
                     &token,
                     format!(
-                        "unexpected token '{}'; expected property or child element.",
+                        "unexpected token '{}'; expected ',' or ']' in attribute list.",
                         token.lexeme
                     ),
                 );
@@ -79,14 +156,22 @@ impl Parser {
             }
         }
 
-        if !self
-            .consume(TokenKind::RBrace, "expected '}' after element body")
-            .is_some()
-        {
-            return Some(ElementNode::new(name, properties, children, span));
-        }
+        self.consume(TokenKind::RBracket, "expected ']' after attribute list");
 
-        Some(ElementNode::new(name, properties, children, span))
+        attributes
+    }
+
+    fn parse_attribute(&mut self) -> Option<Attribute> {
+        let name_token = self
+            .consume_identifier("expected attribute name in attribute list")?
+            .clone();
+        let name = name_token.lexeme.clone();
+        let span = Span::new(name_token.line(), name_token.column());
+
+        self.consume(TokenKind::Colon, "expected ':' after attribute name")?;
+
+        let value = self.parse_value()?;
+        Some(Attribute::new(name, value, span))
     }
 
     fn parse_property(&mut self) -> Option<Property> {
@@ -98,6 +183,19 @@ impl Parser {
 
         let value = self.parse_value()?;
         Some(Property::new(name, value, span))
+    }
+
+    fn parse_text_node(&mut self) -> Option<Node> {
+        let token = self.peek().clone();
+
+        if token.kind != TokenKind::String {
+            self.push_error_at_token(&token, "expected text content".to_string());
+            return None;
+        }
+
+        let span = Span::new(token.line(), token.column());
+        self.advance();
+        Some(Node::text(token.lexeme, span))
     }
 
     fn parse_value(&mut self) -> Option<Value> {
@@ -133,11 +231,7 @@ impl Parser {
 
     fn synchronize(&mut self) {
         while !self.is_at_end() {
-            if self.check(TokenKind::RBrace) {
-                return;
-            }
-
-            if self.check(TokenKind::Identifier) {
+            if self.check(TokenKind::RBrace) || self.check(TokenKind::Identifier) {
                 return;
             }
 
@@ -147,7 +241,23 @@ impl Parser {
 
     fn synchronize_in_block(&mut self) {
         while !self.is_at_end() {
-            if self.check(TokenKind::RBrace) || self.check(TokenKind::Identifier) {
+            if self.check(TokenKind::RBrace)
+                || self.check(TokenKind::Identifier)
+                || self.check(TokenKind::String)
+            {
+                return;
+            }
+
+            self.advance();
+        }
+    }
+
+    fn synchronize_in_attribute_list(&mut self) {
+        while !self.is_at_end() {
+            if self.check(TokenKind::Comma)
+                || self.check(TokenKind::RBracket)
+                || self.check(TokenKind::Identifier)
+            {
                 return;
             }
 
@@ -184,7 +294,7 @@ impl Parser {
     }
 
     fn check(&self, kind: TokenKind) -> bool {
-        !self.is_at_end() && self.peek().kind == kind
+        (!self.is_at_end() && self.peek().kind == kind)
             || (kind == TokenKind::Eof && self.is_at_end())
     }
 

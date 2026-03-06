@@ -10,19 +10,44 @@ impl Document {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Node {
-    pub element: ElementNode,
+pub enum Node {
+    Element(ElementNode),
+    Text(TextNode),
 }
 
 impl Node {
     pub fn new(element: ElementNode) -> Self {
-        Self { element }
+        Self::Element(element)
+    }
+
+    pub fn text(value: impl Into<String>, span: Span) -> Self {
+        Self::Text(TextNode::new(value, span))
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TextNode {
+    pub value: String,
+    pub span: Span,
+}
+
+impl TextNode {
+    pub fn new(value: impl Into<String>, span: Span) -> Self {
+        Self {
+            value: value.into(),
+            span,
+        }
+    }
+
+    pub fn line(&self) -> usize {
+        self.span.line
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ElementNode {
     pub name: String,
+    pub attributes: Vec<Attribute>,
     pub properties: Vec<Property>,
     pub children: Vec<Node>,
     pub span: Span,
@@ -31,14 +56,37 @@ pub struct ElementNode {
 impl ElementNode {
     pub fn new(
         name: impl Into<String>,
+        attributes: Vec<Attribute>,
         properties: Vec<Property>,
         children: Vec<Node>,
         span: Span,
     ) -> Self {
         Self {
             name: name.into(),
+            attributes,
             properties,
             children,
+            span,
+        }
+    }
+
+    pub fn line(&self) -> usize {
+        self.span.line
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Attribute {
+    pub name: String,
+    pub value: Value,
+    pub span: Span,
+}
+
+impl Attribute {
+    pub fn new(name: impl Into<String>, value: Value, span: Span) -> Self {
+        Self {
+            name: name.into(),
+            value,
             span,
         }
     }

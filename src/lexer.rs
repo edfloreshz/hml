@@ -9,6 +9,9 @@ pub enum TokenKind {
     HashValue,
     Colon,
     Semicolon,
+    Comma,
+    LBracket,
+    RBracket,
     LBrace,
     RBrace,
     Eof,
@@ -78,8 +81,11 @@ impl<'a> Lexer<'a> {
                 '/' if self.peek_next() == Some('*') => self.skip_block_comment(),
                 '{' => tokens.push(self.single_char(TokenKind::LBrace)),
                 '}' => tokens.push(self.single_char(TokenKind::RBrace)),
+                '[' => tokens.push(self.single_char(TokenKind::LBracket)),
+                ']' => tokens.push(self.single_char(TokenKind::RBracket)),
                 ':' => tokens.push(self.single_char(TokenKind::Colon)),
                 ';' => tokens.push(self.single_char(TokenKind::Semicolon)),
+                ',' => tokens.push(self.single_char(TokenKind::Comma)),
                 '"' => tokens.push(self.lex_string()),
                 '#' => tokens.push(self.lex_hash_value()),
                 '-' => {
@@ -347,6 +353,9 @@ impl<'a> Lexer<'a> {
     }
 
     fn is_value_char(ch: char) -> bool {
-        !matches!(ch, ' ' | '\t' | '\r' | '\n' | '{' | '}' | ':' | ';' | '"')
+        !matches!(
+            ch,
+            ' ' | '\t' | '\r' | '\n' | '{' | '}' | '[' | ']' | ':' | ';' | ',' | '"'
+        )
     }
 }

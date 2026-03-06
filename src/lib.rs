@@ -8,7 +8,7 @@ pub mod parser;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub use ast::{Document, ElementNode, Node, Property, Span, Value};
+pub use ast::{Attribute, Document, ElementNode, Node, Property, Span, TextNode, Value};
 pub use codegen::{CodegenOutput, GeneratedClass};
 pub use diagnostics::{Diagnostic, Diagnostics, Severity, SourceLocation};
 pub use lexer::{LexedOutput, Lexer, Token, TokenKind};
@@ -270,10 +270,7 @@ fn inject_stylesheet_link(html: &str, css_path: &Path) -> String {
             let insert_at = style_index;
             let mut linked = String::new();
             linked.push_str(&html[..insert_at]);
-            if !html[..insert_at].ends_with('\n') {
-                linked.push('\n');
-            }
-            linked.push_str("\t\t");
+            linked.push_str("\t");
             linked.push_str(&link_tag);
             linked.push('\n');
             linked.push_str("\t\t");
@@ -285,12 +282,10 @@ fn inject_stylesheet_link(html: &str, css_path: &Path) -> String {
     if let Some(head_index) = html.find("</head>") {
         let mut linked = String::new();
         linked.push_str(&html[..head_index]);
-        if !html[..head_index].ends_with('\n') {
-            linked.push('\n');
-        }
-        linked.push_str("\t\t");
+        linked.push_str("\t");
         linked.push_str(&link_tag);
         linked.push('\n');
+        linked.push('\t');
         linked.push_str(&html[head_index..]);
         linked
     } else {
