@@ -1,62 +1,139 @@
 # HML
 
-HML is a small Rust compiler for a markup language that looks a bit like HTML, but uses block syntax with curly braces and lets you write styling directly on elements.
+HML is a small Rust compiler for a block-based markup language that compiles to plain HTML and CSS.
 
-The rough idea is:
+The goal is simple:
 
-- Keep the structure of HTML
-- Make dev experience a little cleaner
-- Compile everything down to plain HTML + CSS
-- Avoid any browser runtime
+- keep the document model close to HTML
+- make authoring cleaner and easier to scan
+- let structure, attributes, text, and styling live together
+- emit static output with no browser runtime
 
-This project is still early, but it already works well enough to compile files and inspect the generated output.
+The project is still experimental, but it already supports compiling real example pages into usable HTML and CSS files.
 
 ## What HML looks like
 
-Here’s a small example:
+Here is a small example:
 
 ```hml
-Box {
-    padding: 24px
-    background-color: white
-
-    H1 {
-        font-size: 48px
-        font-weight: 800
-        color: #111111
-        "Hello"
+Document {
+    Head {
+        Meta[charset: "utf-8"]
+        Title "Hello HML"
     }
 
-    Paragraph {
-        color: #666666
-        line-height: 1.6
-        "This was written in HML."
-    }
+    Body {
+        Box[class: "page"] {
+            padding: 24px
+            background-color: white
 
-    Link[href: "https://example.com"] {
-        color: #4f46e5
-        "Read more"
+            H1 {
+                font-size: 48px
+                font-weight: 800
+                color: #111111
+
+                "Hello"
+            }
+
+            Paragraph {
+                color: #666666
+                line-height: 1.6
+
+                "This was written in HML."
+            }
+
+            Link[href: "https://example.com"] {
+                color: #4f46e5
+                text-decoration: none
+
+                "Read more"
+            }
+        }
     }
 }
 ```
 
-That compiles into normal HTML and a generated CSS file with scoped classes.
+That compiles into:
 
-## Current status
+- an HTML document with normal tags
+- a generated CSS file with scoped classes
+- an injected stylesheet link
+- an HTML5 doctype when the top-level document is `Document`
+
+## Core syntax
+
+HML supports three main concepts inside an element:
+
+1. **Attributes**
+   - written in brackets after the element name
+   - example: `Link[href: "https://example.com"]`
+
+2. **Style declarations**
+   - written inside the block body
+   - example: `padding: 24px`
+
+3. **Child content**
+   - nested elements
+   - text nodes written as string literals
+
+### Inline text shorthand
+
+Elements can also take direct inline text:
+
+```hml
+Title "Acme UI"
+Paragraph "Hello world"
+Link[href: "https://example.com"] "Read more"
+```
+
+### Multiline attributes
+
+Bracket attributes can span multiple lines:
+
+```hml
+Input[
+    id: "email",
+    name: "email",
+    type: "email",
+    placeholder: "you@example.com"
+] {
+    width: 100%
+}
+```
+
+### Multi-part CSS values
+
+CSS values can contain multiple tokens:
+
+```hml
+Box {
+    margin: "0 auto"
+    padding: "0 40px 40px 40px"
+    border: "1px solid #e2e8f0"
+}
+```
+
+## Current compiler features
 
 Right now the compiler can:
 
-- Tokenize and parse `.hml` files
-- Map HML element names to HTML tags
-- Distinguish HTML attributes from CSS properties
-- Generate HTML and CSS files
-- Handle text nodes as direct element content
-- Handle attributes in bracket syntax like `Meta[charset: "utf-8"]`
-- Compile a single file or a complete directory from the CLI
-- Inject a stylesheet link into the generated HTML
-- Preserve original directory structure
+- tokenize and parse `.hml` files
+- parse bracket attributes
+- parse inline text shorthand
+- parse text nodes inside blocks
+- parse multi-token CSS values
+- map HML element names to HTML tags
+- distinguish element attributes from CSS declarations
+- generate HTML and CSS files
+- generate scoped CSS classes from element styles
+- merge generated classes with user-provided `class` attributes
+- inject a stylesheet link into generated HTML
+- emit `<!DOCTYPE html>` for HML documents rooted at `Document`
+- compile a single file or a full directory from the CLI
+- preserve directory structure when compiling directories
+- report diagnostics with file and line information
 
-There are also several example files in `examples/` that are useful for testing output.
+There are several example files in `examples/` that exercise realistic layouts and are useful for validating output.
 
 ## Building
 
@@ -71,13 +148,13 @@ cargo build
 Compile a single file:
 
 ```sh
-cargo run -- compile examples/blog/blog.hml --out dist
+cargo run -- compile examples/article.hml --out dist
 ```
 
-Compile a directory of examples:
+Compile a directory:
 
 ```sh
-cargo run -- compile examples --out dist/examples
+cargo run -- compile examples --out dist
 ```
 
 The compiler writes:
@@ -87,6 +164,27 @@ The compiler writes:
 
 for each input `.hml` file.
 
+## Example output model
+
+Given this HML:
+
+```hml
+Paragraph {
+    color: #111111
+    font-size: 16px
+
+    "Hello"
+}
+```
+
+the compiler emits:
+
+- a `<p>` element
+- a generated CSS class like `hml-xxxxxx`
+- a CSS rule containing the declarations
+
+If the element already has a user class, both classes are preserved.
+
 ## HML element mapping
 
 HML uses descriptive element names instead of raw HTML tag names. For example:
@@ -94,55 +192,90 @@ HML uses descriptive element names instead of raw HTML tag names. For example:
 - `Document` -> `html`
 - `Head` -> `head`
 - `Body` -> `body`
+- `Title` -> `title`
+- `Meta` -> `meta`
 - `Box` -> `div`
+- `Section` -> `section`
+- `Article` -> `article`
+- `Header` -> `header`
+- `Footer` -> `footer`
+- `Main` -> `main`
 - `Paragraph` -> `p`
+- `Span` -> `span`
 - `Link` -> `a`
 - `Image` -> `img`
+- `List` -> `ul`
+- `OrderedList` -> `ol`
+- `ListItem` -> `li`
+- `Form` -> `form`
+- `Input` -> `input`
+- `TextArea` -> `textarea`
+- `Select` -> `select`
+- `Option` -> `option`
+- `Button` -> `button`
+- `Label` -> `label`
+- `Table` -> `table`
+- `TableHead` -> `thead`
+- `TableBody` -> `tbody`
+- `TableRow` -> `tr`
+- `TableHeader` -> `th`
+- `TableCell` -> `td`
 
-There are more supported mappings in the compiler source.
+There are more mappings in the source.
 
 ## Styling model
 
-CSS properties are written directly on elements. During code generation, those styles are emitted into CSS rules and associated with generated class names.
+Styles are written directly on elements in the block body.
 
-For example:
+Example:
 
 ```hml
-Paragraph {
-    color: #111111
-    font-size: 16px
-    "Hello"
+Box {
+    background-color: white
+    padding: 24px
+    border-radius: 16px
 }
 ```
 
-becomes a paragraph element with a generated class, and the CSS is written separately.
+During code generation, the compiler:
 
-Attributes are written explicitly in brackets after the element name, for example `Link[href: "https://example.com"]` or `Input[type: "email", required]`.
+1. collects the CSS declarations
+2. generates a stable scoped class name
+3. attaches that class to the output HTML
+4. writes the declarations into the generated CSS file
+
+Attributes are not treated as styles. They are parsed separately from bracket syntax and passed through to HTML output.
 
 ## Diagnostics
 
 The compiler reports errors and warnings with file and line information.
 
-Typical examples include:
+Typical diagnostics include:
 
-- missing required attributes like `href` on links
-- syntax issues from malformed input
-- unknown properties that are passed through
+- missing required attributes like `href` on `Link`
+- missing required attributes like `src` on `Image` or `Script`
+- syntax errors from malformed input
+- unknown properties or attributes
 
-The diagnostics are readable enough for debugging example files, though there is still room to improve the wording and formatting.
+## Project status
 
-## Things that still need work
+The compiler now supports the current example syntax, including:
 
-A few obvious next steps:
+- bracket attributes
+- inline text shorthand
+- text nodes
+- multi-part CSS values
 
-- Compiler support for the finalized bracket-attribute syntax
-- Better parsing for fully natural multi-part CSS values
-- Cleaner HTML formatting in generated files
-- More precise diagnostics
-- Tests
+There is still room to improve, especially in:
+
+- HTML formatting polish
+- diagnostics wording and recovery
+- broader HTML element coverage
+- validation rules for invalid combinations on void elements
+- more exhaustive integration tests
 
 ## Why this exists
 
-Mostly because markup can get noisy, and it's interesting to explore whether a block-based syntax can feel nicer without giving up the simplicity of static HTML and CSS.
+This project exists to explore whether markup can feel cleaner to author without giving up the simplicity of static HTML and CSS.
 
-This project is a compiler experiment first, and a polished tool second.
+It is a compiler experiment first, and a polished tool second.
