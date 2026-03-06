@@ -1,360 +1,383 @@
 Document {
-    Head {
-        Meta {
-            charset: utf-8
-        }
+  Head {
+    Meta[charset: "utf-8"]
+    Meta[name: "viewport", content: "width=device-width, initial-scale=1"]
+    Meta[name: "description", content: "Blog layout example with explicit CSS styling in HML"]
+    Title "Building a Minimal Blog Layout in HML"
+  }
 
-        Meta {
-            name: viewport
-            content: "width=device-width, initial-scale=1"
-        }
+  Body {
+    Box {
+      background-color: #f8fafc
+      color: #0f172a
+      min-height: 100vh
 
-        Meta {
-            name: description
-            content: "Blog layout example with explicit CSS styling in HML"
-        }
+      Header {
+        background: "linear-gradient(135deg, #0f172a, #1e293b)"
+        color: white
+        padding: 48px
 
-        Style {
-            content: "body { margin: 0; font-family: Inter, system-ui, sans-serif; }"
-        }
-    }
-
-    Body {
         Box {
-            background-color: #f8fafc
-            color: #0f172a
-            min-height: 100vh
+          width: 960px
+          margin: "0 auto"
 
-            Header {
-                background: "linear-gradient(135deg, #0f172a, #1e293b)"
-                color: white
-                padding: 48
+          Paragraph {
+            font-size: 14px
+            font-weight: 700
+            letter-spacing: 0.08em
+            text-transform: uppercase
+            color: #cbd5e1
+            margin-bottom: 12px
 
-                Box {
-                    width: 960
-                    margin: "0 auto"
+            "HML Journal"
+          }
 
-                    Paragraph {
-                        content: "HML Journal"
-                        font-size: 14
-                        font-weight: 700
-                        letter-spacing: 0.08em
-                        text-transform: uppercase
-                        color: #cbd5e1
-                        margin-bottom: 12
-                    }
+          H1 {
+            font-size: 56px
+            font-weight: 800
+            line-height: 1.1
+            margin-bottom: 16px
 
-                    H1 {
-                        content: "Building a Minimal Blog Layout in HML"
-                        font-size: 56
-                        font-weight: 800
-                        line-height: 1.1
-                        margin-bottom: 16
-                    }
+            "Building a Minimal Blog Layout in HML"
+          }
 
-                    Paragraph {
-                        content: "A complete example showing article structure, sidebar content, cards, and explicit CSS styling directly in HML."
-                        font-size: 18
-                        line-height: 1.7
-                        color: #e2e8f0
-                        max-width: 760
-                    }
-                }
-            }
+          Paragraph {
+            font-size: 18px
+            line-height: 1.7
+            color: #e2e8f0
+            max-width: 760px
 
-            Main {
-                width: 960
-                margin: "0 auto"
-                padding: 40
+            "A complete example showing article structure, sidebar content, cards, and explicit CSS styling directly in HML."
+          }
+        }
+      }
 
-                Box {
-                    display: flex
-                    gap: 32
-                    align-items: flex-start
+      Main {
+        width: 960px
+        margin: "0 auto"
+        padding: 40px
 
-                    Article {
-                        background-color: white
-                        border-radius: 20
-                        padding: 32
-                        width: 640
-                        box-shadow: "0 12px 40px rgba(15, 23, 42, 0.08)"
+        Box {
+          display: flex
+          gap: 32px
+          align-items: flex-start
 
-                        Box {
-                            display: flex
-                            justify-content: space-between
-                            align-items: center
-                            margin-bottom: 24
-                            padding-bottom: 16
-                            border-bottom: "1px solid #e2e8f0"
+          Article {
+            background-color: white
+            border-radius: 20px
+            padding: 32px
+            width: 640px
+            box-shadow: "0 12px 40px rgba(15, 23, 42, 0.08)"
 
-                            Paragraph {
-                                content: "By Eduardo • March 2026"
-                                color: #64748b
-                                font-size: 14
-                            }
+            Box {
+              display: flex
+              justify-content: space-between
+              align-items: center
+              margin-bottom: 24px
+              padding-bottom: 16px
+              border-bottom: "1px solid #e2e8f0"
 
-                            Span {
-                                content: "Design Systems"
-                                background-color: #eef2ff
-                                color: #4338ca
-                                padding: 8
-                                border-radius: 9999
-                                font-size: 13
-                                font-weight: 700
-                            }
-                        }
-
-                        Paragraph {
-                            content: "When building content-heavy interfaces, the authoring experience matters as much as the output. HML keeps the final result grounded in HTML and CSS while giving you a much cleaner syntax for writing nested structures and direct styles."
-                            font-size: 18
-                            line-height: 1.8
-                            color: #334155
-                            margin-bottom: 20
-                        }
-
-                        Paragraph {
-                            content: "This example demonstrates a realistic blog layout with a hero header, main article body, a sidebar, and reusable content blocks. The styling is written directly on each element so you can test the compiler's CSS classification and scoped class generation."
-                            font-size: 18
-                            line-height: 1.8
-                            color: #334155
-                            margin-bottom: 24
-                        }
-
-                        H2 {
-                            content: "Why explicit styling is useful"
-                            font-size: 32
-                            font-weight: 800
-                            line-height: 1.2
-                            margin-top: 24
-                            margin-bottom: 12
-                            color: #0f172a
-                        }
-
-                        Paragraph {
-                            content: "For compiler testing, explicit styling helps cover many cases at once: dimensions, spacing, typography, backgrounds, borders, shadows, colors, and layout properties. A single example file can validate far more than a plain structural document."
-                            font-size: 17
-                            line-height: 1.8
-                            color: #334155
-                            margin-bottom: 20
-                        }
-
-                        Box {
-                            background-color: #eff6ff
-                            border-left: "4px solid #2563eb"
-                            border-radius: 12
-                            padding: 20
-                            margin-top: 24
-                            margin-bottom: 24
-
-                            H3 {
-                                content: "Tip"
-                                font-size: 20
-                                font-weight: 700
-                                margin-bottom: 8
-                                color: #1d4ed8
-                            }
-
-                            Paragraph {
-                                content: "Use examples like this one to inspect both generated HTML structure and the resulting CSS classes. It is especially useful for verifying unit handling on padding, margins, font sizes, and widths."
-                                font-size: 16
-                                line-height: 1.7
-                                color: #1e3a8a
-                            }
-                        }
-
-                        H2 {
-                            content: "Included styling cases"
-                            font-size: 32
-                            font-weight: 800
-                            line-height: 1.2
-                            margin-top: 24
-                            margin-bottom: 12
-                            color: #0f172a
-                        }
-
-                        List {
-                            padding-left: 24
-                            margin-bottom: 24
-
-                            ListItem {
-                                content: "Typography with font-size, font-weight, line-height, and letter-spacing"
-                                color: #334155
-                                margin-bottom: 8
-                                line-height: 1.7
-                            }
-
-                            ListItem {
-                                content: "Layout with display, width, gap, align-items, and justify-content"
-                                color: #334155
-                                margin-bottom: 8
-                                line-height: 1.7
-                            }
-
-                            ListItem {
-                                content: "Card styling with background-color, border-radius, border, and box-shadow"
-                                color: #334155
-                                margin-bottom: 8
-                                line-height: 1.7
-                            }
-
-                            ListItem {
-                                content: "Section emphasis using gradients, badges, and highlighted callouts"
-                                color: #334155
-                                margin-bottom: 8
-                                line-height: 1.7
-                            }
-                        }
-
-                        Paragraph {
-                            content: "Because the output remains static HTML and CSS, you can inspect, deploy, and cache it exactly like any hand-written frontend artifact. HML focuses on authoring ergonomics without changing the delivery model."
-                            font-size: 17
-                            line-height: 1.8
-                            color: #334155
-                        }
-                    }
-
-                    Aside {
-                        width: 288
-                        display: grid
-                        gap: 20
-
-                        Box {
-                            background-color: white
-                            border-radius: 16
-                            padding: 24
-                            box-shadow: "0 12px 32px rgba(15, 23, 42, 0.08)"
-
-                            H3 {
-                                content: "About this example"
-                                font-size: 22
-                                font-weight: 800
-                                margin-bottom: 12
-                                color: #0f172a
-                            }
-
-                            Paragraph {
-                                content: "This sidebar helps test multi-column layouts and independent style scopes on adjacent sections."
-                                font-size: 15
-                                line-height: 1.7
-                                color: #475569
-                            }
-                        }
-
-                        Box {
-                            background-color: #ffffff
-                            border-radius: 16
-                            padding: 24
-                            border: "1px solid #e2e8f0"
-
-                            H3 {
-                                content: "Popular posts"
-                                font-size: 22
-                                font-weight: 800
-                                margin-bottom: 16
-                                color: #0f172a
-                            }
-
-                            Box {
-                                margin-bottom: 16
-                                padding-bottom: 16
-                                border-bottom: "1px solid #e2e8f0"
-
-                                Link {
-                                    href: "https://example.com/post-1"
-                                    content: "Authoring design systems with block-based markup"
-                                    color: #0f172a
-                                    font-weight: 700
-                                }
-
-                                Paragraph {
-                                    content: "5 min read"
-                                    font-size: 14
-                                    color: #64748b
-                                    margin-top: 6
-                                }
-                            }
-
-                            Box {
-                                margin-bottom: 16
-                                padding-bottom: 16
-                                border-bottom: "1px solid #e2e8f0"
-
-                                Link {
-                                    href: "https://example.com/post-2"
-                                    content: "Generating scoped CSS without a runtime"
-                                    color: #0f172a
-                                    font-weight: 700
-                                }
-
-                                Paragraph {
-                                    content: "7 min read"
-                                    font-size: 14
-                                    color: #64748b
-                                    margin-top: 6
-                                }
-                            }
-
-                            Box {
-                                Link {
-                                    href: "https://example.com/post-3"
-                                    content: "Testing compilers with realistic markup fixtures"
-                                    color: #0f172a
-                                    font-weight: 700
-                                }
-
-                                Paragraph {
-                                    content: "4 min read"
-                                    font-size: 14
-                                    color: #64748b
-                                    margin-top: 6
-                                }
-                            }
-                        }
-
-                        Box {
-                            background: "linear-gradient(135deg, #4f46e5, #7c3aed)"
-                            color: white
-                            border-radius: 16
-                            padding: 24
-
-                            H3 {
-                                content: "Subscribe"
-                                font-size: 22
-                                font-weight: 800
-                                margin-bottom: 10
-                            }
-
-                            Paragraph {
-                                content: "Get new HML articles and compiler updates in your inbox."
-                                font-size: 15
-                                line-height: 1.7
-                                color: #ede9fe
-                                margin-bottom: 16
-                            }
-
-                            Link {
-                                href: "mailto:newsletter@example.com"
-                                content: "newsletter@example.com"
-                                color: white
-                                font-weight: 700
-                            }
-                        }
-                    }
-                }
-            }
-
-            Footer {
-                margin-top: 32
-                padding: 24
-                text-align: center
+              Paragraph {
                 color: #64748b
-                border-top: "1px solid #e2e8f0"
+                font-size: 14px
+
+                "By Eduardo • March 2026"
+              }
+
+              Span {
+                background-color: #eef2ff
+                color: #4338ca
+                padding: 8px
+                border-radius: 9999px
+                font-size: 13px
+                font-weight: 700
+
+                "Design Systems"
+              }
+            }
+
+            Paragraph {
+              font-size: 18px
+              line-height: 1.8
+              color: #334155
+              margin-bottom: 20px
+
+              "When building content-heavy interfaces, the authoring experience matters as much as the output. HML keeps the final result grounded in HTML and CSS while giving you a much cleaner syntax for writing nested structures and direct styles."
+            }
+
+            Paragraph {
+              font-size: 18px
+              line-height: 1.8
+              color: #334155
+              margin-bottom: 24px
+
+              "This example demonstrates a realistic blog layout with a hero header, main article body, a sidebar, and reusable content blocks. The styling is written directly on each element so you can test the compiler's CSS classification and scoped class generation."
+            }
+
+            H2 {
+              font-size: 32px
+              font-weight: 800
+              line-height: 1.2
+              margin-top: 24px
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Why explicit styling is useful"
+            }
+
+            Paragraph {
+              font-size: 17px
+              line-height: 1.8
+              color: #334155
+              margin-bottom: 20px
+
+              "For compiler testing, explicit styling helps cover many cases at once: dimensions, spacing, typography, backgrounds, borders, shadows, colors, and layout properties. A single example file can validate far more than a plain structural document."
+            }
+
+            Box {
+              background-color: #eff6ff
+              border-left: "4px solid #2563eb"
+              border-radius: 12px
+              padding: 20px
+              margin-top: 24px
+              margin-bottom: 24px
+
+              H3 {
+                font-size: 20px
+                font-weight: 700
+                margin-bottom: 8px
+                color: #1d4ed8
+
+                "Tip"
+              }
+
+              Paragraph {
+                font-size: 16px
+                line-height: 1.7
+                color: #1e3a8a
+
+                "Use examples like this one to inspect both generated HTML structure and the resulting CSS classes. It is especially useful for verifying unit handling on padding, margins, font sizes, and widths."
+              }
+            }
+
+            H2 {
+              font-size: 32px
+              font-weight: 800
+              line-height: 1.2
+              margin-top: 24px
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Included styling cases"
+            }
+
+            List {
+              padding-left: 24px
+              margin-bottom: 24px
+
+              ListItem {
+                color: #334155
+                margin-bottom: 8px
+                line-height: 1.7
+
+                "Typography with font-size, font-weight, line-height, and letter-spacing"
+              }
+
+              ListItem {
+                color: #334155
+                margin-bottom: 8px
+                line-height: 1.7
+
+                "Layout with display, width, gap, align-items, and justify-content"
+              }
+
+              ListItem {
+                color: #334155
+                margin-bottom: 8px
+                line-height: 1.7
+
+                "Card styling with background-color, border-radius, border, and box-shadow"
+              }
+
+              ListItem {
+                color: #334155
+                margin-bottom: 8px
+                line-height: 1.7
+
+                "Section emphasis using gradients, badges, and highlighted callouts"
+              }
+            }
+
+            Paragraph {
+              font-size: 17px
+              line-height: 1.8
+              color: #334155
+
+              "Because the output remains static HTML and CSS, you can inspect, deploy, and cache it exactly like any hand-written frontend artifact. HML focuses on authoring ergonomics without changing the delivery model."
+            }
+          }
+
+          Aside {
+            width: 288px
+            display: grid
+            gap: 20px
+
+            Box {
+              background-color: white
+              border-radius: 16px
+              padding: 24px
+              box-shadow: "0 12px 32px rgba(15, 23, 42, 0.08)"
+
+              H3 {
+                font-size: 22px
+                font-weight: 800
+                margin-bottom: 12px
+                color: #0f172a
+
+                "About this example"
+              }
+
+              Paragraph {
+                font-size: 15px
+                line-height: 1.7
+                color: #475569
+
+                "This sidebar helps test multi-column layouts and independent style scopes on adjacent sections."
+              }
+            }
+
+            Box {
+              background-color: white
+              border-radius: 16px
+              padding: 24px
+              border: "1px solid #e2e8f0"
+
+              H3 {
+                font-size: 22px
+                font-weight: 800
+                margin-bottom: 16px
+                color: #0f172a
+
+                "Popular posts"
+              }
+
+              Box {
+                margin-bottom: 16px
+                padding-bottom: 16px
+                border-bottom: "1px solid #e2e8f0"
 
                 Paragraph {
-                    content: "Blog example generated for HML compiler testing."
-                    font-size: 14
+                  font-size: 14px
+                  font-weight: 700
+                  color: #0f172a
+                  margin-bottom: 6px
+
+                  "Designing with generated CSS classes"
                 }
+
+                Paragraph {
+                  font-size: 14px
+                  line-height: 1.6
+                  color: #64748b
+
+                  "How scoped styles can keep source files readable without sacrificing maintainability."
+                }
+              }
+
+              Box {
+                margin-bottom: 16px
+                padding-bottom: 16px
+                border-bottom: "1px solid #e2e8f0"
+
+                Paragraph {
+                  font-size: 14px
+                  font-weight: 700
+                  color: #0f172a
+                  margin-bottom: 6px
+
+                  "Typing a markup DSL"
+                }
+
+                Paragraph {
+                  font-size: 14px
+                  line-height: 1.6
+                  color: #64748b
+
+                  "Tradeoffs between ergonomic syntax and parser complexity in custom languages."
+                }
+              }
+
+              Box {
+                Paragraph {
+                  font-size: 14px
+                  font-weight: 700
+                  color: #0f172a
+                  margin-bottom: 6px
+
+                  "When static output is enough"
+                }
+
+                Paragraph {
+                  font-size: 14px
+                  line-height: 1.6
+                  color: #64748b
+
+                  "Why many content-first pages do not need a client-side runtime at all."
+                }
+              }
             }
+
+            Box {
+              background: "linear-gradient(135deg, #4f46e5, #7c3aed)"
+              color: white
+              border-radius: 16px
+              padding: 24px
+
+              H3 {
+                font-size: 22px
+                font-weight: 800
+                margin-bottom: 10px
+
+                "Subscribe"
+              }
+
+              Paragraph {
+                font-size: 15px
+                line-height: 1.7
+                color: #e9d5ff
+                margin-bottom: 16px
+
+                "Get updates about HML experiments, compiler ideas, and example layouts."
+              }
+
+              Link[href: "https://example.com/subscribe"] {
+                display: inline-block
+                background-color: white
+                color: #4f46e5
+                padding: 12px
+                border-radius: 10px
+                font-weight: 700
+                text-decoration: none
+
+                "Join the newsletter"
+              }
+            }
+          }
         }
+      }
+
+      Footer {
+        width: 960px
+        margin: "0 auto"
+        padding: 0 40px 40px 40px
+
+        Paragraph {
+          color: #64748b
+          font-size: 14px
+
+          "© 2026 HML Journal. Built as a static HTML and CSS example."
+        }
+      }
     }
+  }
 }

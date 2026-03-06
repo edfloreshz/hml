@@ -1,336 +1,303 @@
 Document {
-    Head {
-        Meta {
-            charset: utf-8
+  Head {
+    Meta[charset: "utf-8"]
+    Meta[name: "viewport", content: "width=device-width, initial-scale=1"]
+    Meta[name: "description", content: "A sample landing page written in HML"]
+    Title "Acme UI"
+  }
+
+  Body {
+    Box[class: "page"] {
+      background-color: #f8fafc
+      color: #0f172a
+      min-height: 100vh
+
+      Header {
+        background: "linear-gradient(135deg, #4f46e5, #7c3aed)"
+        color: white
+        padding: 32px
+
+        Nav {
+          display: flex
+          justify-content: space-between
+          align-items: center
+          margin-bottom: 48px
+
+          H2 {
+            font-size: 24px
+            font-weight: 800
+            "Acme UI"
+          }
+
+          Box {
+            display: flex
+            gap: 16px
+
+            Link[href: "#features"] {
+              color: white
+              "Features"
+            }
+
+            Link[href: "#pricing"] {
+              color: white
+              "Pricing"
+            }
+
+            Link[href: "#contact"] {
+              color: white
+              "Contact"
+            }
+          }
         }
 
-        Meta {
-            name: viewport
-            content: "width=device-width, initial-scale=1"
+        Section {
+          width: 720px
+          margin: "0 auto"
+          text-align: center
+          padding: 48px
+
+          H1 {
+            font-size: 56px
+            font-weight: 800
+            line-height: 1.1
+            margin-bottom: 16px
+            "Build beautiful websites with HML"
+          }
+
+          Paragraph {
+            font-size: 18px
+            line-height: 1.7
+            color: #e9d5ff
+            margin-bottom: 24px
+            "HML gives you clean markup, inline styling, and static HTML plus CSS output with no runtime."
+          }
+
+          Box {
+            display: flex
+            justify-content: center
+            gap: 16px
+
+            Link[href: "https://example.com/get-started"] {
+              background-color: white
+              color: #4f46e5
+              padding: 14px
+              border-radius: 10px
+              text-decoration: none
+              "Get Started"
+            }
+
+            Link[href: "https://example.com/docs"] {
+              border: "1px solid rgba(255,255,255,0.4)"
+              color: white
+              padding: 14px
+              border-radius: 10px
+              text-decoration: none
+              "Read Docs"
+            }
+          }
+        }
+      }
+
+      Main {
+        padding: 40px
+
+        Section[id: "features"] {
+          margin-bottom: 48px
+
+          H2 {
+            font-size: 32px
+            font-weight: 800
+            text-align: center
+            margin-bottom: 24px
+            "Features"
+          }
+
+          Box {
+            display: flex
+            gap: 24px
+            justify-content: center
+
+            Article {
+              background-color: white
+              border-radius: 16px
+              padding: 24px
+              width: 320px
+              box-shadow: "0 10px 30px rgba(15, 23, 42, 0.08)"
+
+              H3 {
+                font-size: 22px
+                font-weight: 700
+                margin-bottom: 12px
+                "Readable Syntax"
+              }
+
+              Paragraph {
+                color: #475569
+                line-height: 1.7
+                "Write nested UI with concise blocks instead of angle brackets and closing tags."
+              }
+            }
+
+            Article {
+              background-color: white
+              border-radius: 16px
+              padding: 24px
+              width: 320px
+              box-shadow: "0 10px 30px rgba(15, 23, 42, 0.08)"
+
+              H3 {
+                font-size: 22px
+                font-weight: 700
+                margin-bottom: 12px
+                "Inline Styling"
+              }
+
+              Paragraph {
+                color: #475569
+                line-height: 1.7
+                "Use CSS properties directly on elements and compile them into scoped classes."
+              }
+            }
+
+            Article {
+              background-color: white
+              border-radius: 16px
+              padding: 24px
+              width: 320px
+              box-shadow: "0 10px 30px rgba(15, 23, 42, 0.08)"
+
+              H3 {
+                font-size: 22px
+                font-weight: 700
+                margin-bottom: 12px
+                "Static Output"
+              }
+
+              Paragraph {
+                color: #475569
+                line-height: 1.7
+                "Generate HTML and CSS files that are easy to ship, cache, and deploy anywhere."
+              }
+            }
+          }
         }
 
-        Meta {
-            name: description
-            content: "A sample landing page written in HML"
+        Section[id: "pricing"] {
+          margin-bottom: 48px
+
+          H2 {
+            font-size: 32px
+            font-weight: 800
+            text-align: center
+            margin-bottom: 24px
+            "Pricing"
+          }
+
+          Box {
+            display: flex
+            gap: 24px
+            justify-content: center
+
+            Article {
+              background-color: white
+              border-radius: 16px
+              padding: 24px
+              width: 280px
+              border: "1px solid #e2e8f0"
+
+              H3 {
+                font-size: 24px
+                font-weight: 700
+                margin-bottom: 8px
+                "Starter"
+              }
+
+              Paragraph {
+                font-size: 18px
+                font-weight: 700
+                color: #4f46e5
+                margin-bottom: 16px
+                "$0 / month"
+              }
+
+              List {
+                ListItem "Personal projects"
+                ListItem "Basic components"
+                ListItem "Community support"
+              }
+            }
+
+            Article {
+              background-color: #312e81
+              color: white
+              border-radius: 16px
+              padding: 24px
+              width: 280px
+
+              H3 {
+                font-size: 24px
+                font-weight: 700
+                margin-bottom: 8px
+                "Pro"
+              }
+
+              Paragraph {
+                font-size: 18px
+                font-weight: 700
+                color: #c4b5fd
+                margin-bottom: 16px
+                "$19 / month"
+              }
+
+              List {
+                ListItem "Team collaboration"
+                ListItem "Advanced components"
+                ListItem "Priority support"
+              }
+            }
+          }
         }
+
+        Section[id: "contact"] {
+          text-align: center
+          background-color: white
+          border-radius: 16px
+          padding: 32px
+          width: 720px
+          margin: "0 auto"
+
+          H2 {
+            font-size: 32px
+            font-weight: 800
+            margin-bottom: 12px
+            "Start building today"
+          }
+
+          Paragraph {
+            color: #475569
+            line-height: 1.7
+            margin-bottom: 20px
+            "Try this example to test your HML compiler output for a real page layout."
+          }
+
+          Link[href: "mailto:team@example.com"] {
+            color: #4f46e5
+            font-weight: 700
+            "team@example.com"
+          }
+        }
+      }
+
+      Footer {
+        padding: 24px
+        text-align: center
+        color: #64748b
+
+        Paragraph {
+          font-size: 14px
+          "© 2026 Acme UI. Built with HML."
+        }
+      }
     }
-
-    Body {
-        Box {
-            class: page
-            background-color: #f8fafc
-            color: #0f172a
-            min-height: 100vh
-
-            Header {
-                background: "linear-gradient(135deg, #4f46e5, #7c3aed)"
-                color: white
-                padding: 32
-
-                Nav {
-                    display: flex
-                    justify-content: space-between
-                    align-items: center
-                    margin-bottom: 48
-
-                    H2 {
-                        content: "Acme UI"
-                        font-size: 24
-                        font-weight: 800
-                    }
-
-                    Box {
-                        display: flex
-                        gap: 16
-
-                        Link {
-                            href: "#features"
-                            content: "Features"
-                            color: white
-                        }
-
-                        Link {
-                            href: "#pricing"
-                            content: "Pricing"
-                            color: white
-                        }
-
-                        Link {
-                            href: "#contact"
-                            content: "Contact"
-                            color: white
-                        }
-                    }
-                }
-
-                Section {
-                    width: 720
-                    margin: "0 auto"
-                    text-align: center
-                    padding: 48
-
-                    H1 {
-                        content: "Build beautiful websites with HML"
-                        font-size: 56
-                        font-weight: 800
-                        line-height: 1.1
-                        margin-bottom: 16
-                    }
-
-                    Paragraph {
-                        content: "HML gives you clean markup, inline styling, and static HTML plus CSS output with no runtime."
-                        font-size: 18
-                        line-height: 1.7
-                        color: #e9d5ff
-                        margin-bottom: 24
-                    }
-
-                    Box {
-                        display: flex
-                        justify-content: center
-                        gap: 16
-
-                        Link {
-                            href: "https://example.com/get-started"
-                            content: "Get Started"
-                            background-color: white
-                            color: #4f46e5
-                            padding: 14
-                            border-radius: 10
-                        }
-
-                        Link {
-                            href: "https://example.com/docs"
-                            content: "Read Docs"
-                            border: "1px solid rgba(255,255,255,0.4)"
-                            color: white
-                            padding: 14
-                            border-radius: 10
-                        }
-                    }
-                }
-            }
-
-            Main {
-                padding: 40
-
-                Section {
-                    id: features
-                    margin-bottom: 48
-
-                    H2 {
-                        content: "Features"
-                        font-size: 32
-                        font-weight: 800
-                        text-align: center
-                        margin-bottom: 24
-                    }
-
-                    Box {
-                        display: flex
-                        gap: 24
-                        justify-content: center
-
-                        Article {
-                            background-color: white
-                            border-radius: 16
-                            padding: 24
-                            width: 320
-                            box-shadow: "0 10px 30px rgba(15, 23, 42, 0.08)"
-
-                            H3 {
-                                content: "Readable Syntax"
-                                font-size: 22
-                                font-weight: 700
-                                margin-bottom: 12
-                            }
-
-                            Paragraph {
-                                content: "Write nested UI with concise blocks instead of angle brackets and closing tags."
-                                color: #475569
-                                line-height: 1.7
-                            }
-                        }
-
-                        Article {
-                            background-color: white
-                            border-radius: 16
-                            padding: 24
-                            width: 320
-                            box-shadow: "0 10px 30px rgba(15, 23, 42, 0.08)"
-
-                            H3 {
-                                content: "Inline Styling"
-                                font-size: 22
-                                font-weight: 700
-                                margin-bottom: 12
-                            }
-
-                            Paragraph {
-                                content: "Use CSS properties directly on elements and compile them into scoped classes."
-                                color: #475569
-                                line-height: 1.7
-                            }
-                        }
-
-                        Article {
-                            background-color: white
-                            border-radius: 16
-                            padding: 24
-                            width: 320
-                            box-shadow: "0 10px 30px rgba(15, 23, 42, 0.08)"
-
-                            H3 {
-                                content: "Static Output"
-                                font-size: 22
-                                font-weight: 700
-                                margin-bottom: 12
-                            }
-
-                            Paragraph {
-                                content: "Generate HTML and CSS files that are easy to ship, cache, and deploy anywhere."
-                                color: #475569
-                                line-height: 1.7
-                            }
-                        }
-                    }
-                }
-
-                Section {
-                    id: pricing
-                    margin-bottom: 48
-
-                    H2 {
-                        content: "Pricing"
-                        font-size: 32
-                        font-weight: 800
-                        text-align: center
-                        margin-bottom: 24
-                    }
-
-                    Box {
-                        display: flex
-                        gap: 24
-                        justify-content: center
-
-                        Article {
-                            background-color: white
-                            border-radius: 16
-                            padding: 24
-                            width: 280
-                            border: "1px solid #e2e8f0"
-
-                            H3 {
-                                content: "Starter"
-                                font-size: 24
-                                font-weight: 700
-                                margin-bottom: 8
-                            }
-
-                            Paragraph {
-                                content: "$0 / month"
-                                font-size: 18
-                                font-weight: 700
-                                color: #4f46e5
-                                margin-bottom: 16
-                            }
-
-                            List {
-                                ListItem {
-                                    content: "Personal projects"
-                                }
-
-                                ListItem {
-                                    content: "Basic components"
-                                }
-
-                                ListItem {
-                                    content: "Community support"
-                                }
-                            }
-                        }
-
-                        Article {
-                            background-color: #312e81
-                            color: white
-                            border-radius: 16
-                            padding: 24
-                            width: 280
-
-                            H3 {
-                                content: "Pro"
-                                font-size: 24
-                                font-weight: 700
-                                margin-bottom: 8
-                            }
-
-                            Paragraph {
-                                content: "$19 / month"
-                                font-size: 18
-                                font-weight: 700
-                                color: #c4b5fd
-                                margin-bottom: 16
-                            }
-
-                            List {
-                                ListItem {
-                                    content: "Team collaboration"
-                                }
-
-                                ListItem {
-                                    content: "Advanced components"
-                                }
-
-                                ListItem {
-                                    content: "Priority support"
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Section {
-                    id: contact
-                    text-align: center
-                    background-color: white
-                    border-radius: 16
-                    padding: 32
-                    width: 720
-                    margin: "0 auto"
-
-                    H2 {
-                        content: "Start building today"
-                        font-size: 32
-                        font-weight: 800
-                        margin-bottom: 12
-                    }
-
-                    Paragraph {
-                        content: "Try this example to test your HML compiler output for a real page layout."
-                        color: #475569
-                        line-height: 1.7
-                        margin-bottom: 20
-                    }
-
-                    Link {
-                        href: "mailto:team@example.com"
-                        content: "team@example.com"
-                        color: #4f46e5
-                        font-weight: 700
-                    }
-                }
-            }
-
-            Footer {
-                padding: 24
-                text-align: center
-                color: #64748b
-
-                Paragraph {
-                    content: "© 2026 Acme UI. Built with HML."
-                    font-size: 14
-                }
-            }
-        }
-    }
+  }
 }

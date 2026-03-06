@@ -17,26 +17,25 @@ Here’s a small example:
 
 ```hml
 Box {
-    padding: 24
+    padding: 24px
     background-color: white
 
     H1 {
-        content: "Hello"
-        font-size: 48
+        font-size: 48px
         font-weight: 800
         color: #111111
+        "Hello"
     }
 
     Paragraph {
-        content: "This was written in HML."
         color: #666666
         line-height: 1.6
+        "This was written in HML."
     }
 
-    Link {
-        href: "https://example.com"
-        content: "Read more"
+    Link[href: "https://example.com"] {
         color: #4f46e5
+        "Read more"
     }
 }
 ```
@@ -51,8 +50,8 @@ Right now the compiler can:
 - Map HML element names to HTML tags
 - Distinguish HTML attributes from CSS properties
 - Generate HTML and CSS files
-- Handle `content` as text content for normal elements
-- Handle `content` as an attribute for `Meta`
+- Handle text nodes as direct element content
+- Handle attributes in bracket syntax like `Meta[charset: "utf-8"]`
 - Compile a single file or a complete directory from the CLI
 - Inject a stylesheet link into the generated HTML
 - Preserve original directory structure
@@ -110,15 +109,15 @@ For example:
 
 ```hml
 Paragraph {
-    content: "Hello"
     color: #111111
-    font-size: 16
+    font-size: 16px
+    "Hello"
 }
 ```
 
 becomes a paragraph element with a generated class, and the CSS is written separately.
 
-Attributes that are not recognized as CSS are treated as HTML attributes.
+Attributes are written explicitly in brackets after the element name, for example `Link[href: "https://example.com"]` or `Input[type: "email", required]`.
 
 ## Diagnostics
 
@@ -136,10 +135,10 @@ The diagnostics are readable enough for debugging example files, though there is
 
 A few obvious next steps:
 
+- Compiler support for the finalized bracket-attribute syntax
 - Better parsing for fully natural multi-part CSS values
-- Cleaner HTML formatting in some generated files
+- Cleaner HTML formatting in generated files
 - More precise diagnostics
-- Documentation for the language itself
 - Tests
 
 ## Why this exists
