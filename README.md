@@ -143,18 +143,48 @@ Make sure you have a recent Rust toolchain installed, then run:
 cargo build
 ```
 
+## Installation
+
+Install the CLI using Cargo:
+
+```sh
+cargo install --path .
+```
+
 ## CLI usage
 
 Compile a single file:
 
 ```sh
-cargo run -- compile examples/article.hml --out dist
+hml compile examples/article.hml
 ```
 
 Compile a directory:
 
 ```sh
-cargo run -- compile examples --out dist
+hml compile examples
+```
+
+Watch and rebuild on changes:
+
+```sh
+hml watch examples
+```
+
+Start the dev server with live reload:
+
+```sh
+hml dev examples
+```
+
+The `dev` command serves the compiled output, watches for `.hml` changes, live reloads the browser after successful rebuilds, and opens the browser automatically.
+
+The output directory defaults to `dist`, so `--out` is optional.
+
+You can still override the default output directory:
+
+```sh
+hml dev examples --out build --port 4000
 ```
 
 The compiler writes:

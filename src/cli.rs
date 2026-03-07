@@ -15,7 +15,6 @@ pub enum CliAction {
         out: PathBuf,
         host: String,
         port: u16,
-        open: bool,
     },
     Help,
     Version,
@@ -47,22 +46,7 @@ where
         .map(PathBuf::from)
         .ok_or_else(|| compile_usage("missing input path"))?;
 
-    let flag = args
-        .next()
-        .ok_or_else(|| compile_usage("missing required --out <DIR>"))?;
-
-    if flag != "--out" {
-        return Err(compile_usage("expected --out <DIR>"));
-    }
-
-    let out = args
-        .next()
-        .map(PathBuf::from)
-        .ok_or_else(|| compile_usage("missing output directory after --out"))?;
-
-    if let Some(extra) = args.next() {
-        return Err(compile_usage(&format!("unexpected argument '{extra}'")));
-    }
+    let out = parse_simple_out_args(&mut args, compile_usage)?;
 
     Ok(CliAction::Compile { input, out })
 }
@@ -76,22 +60,7 @@ where
         .map(PathBuf::from)
         .ok_or_else(|| watch_usage("missing input path"))?;
 
-    let flag = args
-        .next()
-        .ok_or_else(|| watch_usage("missing required --out <DIR>"))?;
-
-    if flag != "--out" {
-        return Err(watch_usage("expected --out <DIR>"));
-    }
-
-    let out = args
-        .next()
-        .map(PathBuf::from)
-        .ok_or_else(|| watch_usage("missing output directory after --out"))?;
-
-    if let Some(extra) = args.next() {
-        return Err(watch_usage(&format!("unexpected argument '{extra}'")));
-    }
+    let out = parse_simple_out_args(&mut args, watch_usage)?;
 
     Ok(CliAction::Watch { input, out })
 }
@@ -105,25 +74,18 @@ where
         .map(PathBuf::from)
         .ok_or_else(|| dev_usage("missing input path"))?;
 
-    let flag = args
-        .next()
-        .ok_or_else(|| dev_usage("missing required --out <DIR>"))?;
-
-    if flag != "--out" {
-        return Err(dev_usage("expected --out <DIR>"));
-    }
-
-    let out = args
-        .next()
-        .map(PathBuf::from)
-        .ok_or_else(|| dev_usage("missing output directory after --out"))?;
-
+    let mut out = PathBuf::from("dist");
     let mut host = String::from("127.0.0.1");
-    let mut port = 3000;
-    let mut open = false;
+    let mut port = 4000;
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
+            "--out" => {
+                out = args
+                    .next()
+                    .map(PathBuf::from)
+                    .ok_or_else(|| dev_usage("missing output directory after --out"))?;
+            }
             "--host" => {
                 host = args
                     .next()
@@ -137,8 +99,8 @@ where
                     .parse::<u16>()
                     .map_err(|_| dev_usage(&format!("invalid port '{value}'")))?;
             }
-            "--open" => {
-                open = true;
+            extra if extra.starts_with("--") => {
+                return Err(dev_usage(&format!("unexpected argument '{extra}'")));
             }
             extra => {
                 return Err(dev_usage(&format!("unexpected argument '{extra}'")));
@@ -151,7 +113,6 @@ where
         out,
         host,
         port,
-        open,
     })
 }
 
@@ -161,9 +122,9 @@ pub fn help_text() -> String {
 {about}
 
 USAGE:
-    {name} compile <INPUT> --out <DIR>
-    {name} watch <INPUT> --out <DIR>
-    {name} dev <INPUT> --out <DIR> [--host <HOST>] [--port <PORT>] [--open]
+    {name} compile <INPUT> [--out <DIR>]
+    {name} watch <INPUT> [--out <DIR>]
+    {name} dev <INPUT> [--out <DIR>] [--host <HOST>] [--port <PORT>]
 
 COMMANDS:
     compile    Compile a single .hml file or a directory of .hml files
@@ -180,15 +141,38 @@ OPTIONS:
 }
 
 pub fn compile_usage(message: &str) -> String {
-    format!("{message}\n\nUSAGE:\n    hml compile <INPUT> --out <DIR>")
+    format!("{message}\n\nUSAGE:\n    hml compile <INPUT> [--out <DIR>]")
 }
 
 pub fn watch_usage(message: &str) -> String {
-    format!("{message}\n\nUSAGE:\n    hml watch <INPUT> --out <DIR>")
+    format!("{message}\n\nUSAGE:\n    hml watch <INPUT> [--out <DIR>]")
 }
 
 pub fn dev_usage(message: &str) -> String {
     format!(
-        "{message}\n\nUSAGE:\n    hml dev <INPUT> --out <DIR> [--host <HOST>] [--port <PORT>] [--open]"
+        "{message}\n\nUSAGE:\n    hml dev <INPUT> [--out <DIR>] [--host <HOST>] [--port <PORT>]"
     )
+}
+
+fn parse_simple_out_args<I>(args: &mut I, usage: fn(&str) -> String) -> Result<PathBuf, String>
+where
+    I: Iterator<Item = String>,
+{
+    match args.next() {
+        None => Ok(PathBuf::from("dist")),
+        Some(flag) if flag == "--out" => {
+            let out = args
+                .next()
+                .map(PathBuf::from)
+                .ok_or_else(|| usage("missing output directory after --out"))?;
+
+            if let Some(extra) = args.next() {
+                return Err(usage(&format!("unexpected argument '{extra}'")));
+            }
+
+            Ok(out)
+        }
+        Some(flag) if flag.starts_with("--") => Err(usage("expected --out <DIR>")),
+        Some(extra) => Err(usage(&format!("unexpected argument '{extra}'"))),
+    }
 }

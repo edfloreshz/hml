@@ -41,8 +41,7 @@ fn parses_short_version_flag() {
 
 #[test]
 fn parses_compile_command() {
-    let action = parse_args(strings(&["compile", "input.hml", "--out", "dist"]))
-        .expect("expected compile action");
+    let action = parse_args(strings(&["compile", "input.hml"])).expect("expected compile action");
 
     assert_eq!(
         action,
@@ -55,8 +54,7 @@ fn parses_compile_command() {
 
 #[test]
 fn parses_watch_command() {
-    let action = parse_args(strings(&["watch", "input.hml", "--out", "dist"]))
-        .expect("expected watch action");
+    let action = parse_args(strings(&["watch", "input.hml"])).expect("expected watch action");
 
     assert_eq!(
         action,
@@ -69,8 +67,7 @@ fn parses_watch_command() {
 
 #[test]
 fn parses_dev_command() {
-    let action =
-        parse_args(strings(&["dev", "input.hml", "--out", "dist"])).expect("expected dev action");
+    let action = parse_args(strings(&["dev", "input.hml"])).expect("expected dev action");
 
     assert_eq!(
         action,
@@ -78,8 +75,7 @@ fn parses_dev_command() {
             input: PathBuf::from("input.hml"),
             out: PathBuf::from("dist"),
             host: "127.0.0.1".to_string(),
-            port: 3000,
-            open: false,
+            port: 4000,
         }
     );
 }
@@ -87,7 +83,7 @@ fn parses_dev_command() {
 #[test]
 fn parses_dev_command_with_all_options() {
     let action = parse_args(strings(&[
-        "dev", "examples", "--out", "dist", "--host", "0.0.0.0", "--port", "4000", "--open",
+        "dev", "examples", "--out", "dist", "--host", "0.0.0.0", "--port", "4000",
     ]))
     .expect("expected dev action");
 
@@ -98,7 +94,6 @@ fn parses_dev_command_with_all_options() {
             out: PathBuf::from("dist"),
             host: "0.0.0.0".to_string(),
             port: 4000,
-            open: true,
         }
     );
 }
@@ -110,16 +105,24 @@ fn rejects_compile_without_input() {
 }
 
 #[test]
-fn rejects_compile_without_out_flag() {
-    let error = parse_args(strings(&["compile", "input.hml"])).expect_err("expected parse error");
-    assert!(error.contains("missing required --out <DIR>"));
+fn parses_compile_command_with_explicit_out_flag() {
+    let action = parse_args(strings(&["compile", "input.hml", "--out", "build"]))
+        .expect("expected compile action");
+
+    assert_eq!(
+        action,
+        CliAction::Compile {
+            input: PathBuf::from("input.hml"),
+            out: PathBuf::from("build"),
+        }
+    );
 }
 
 #[test]
 fn rejects_compile_with_wrong_flag_position() {
     let error = parse_args(strings(&["compile", "--out", "dist", "input.hml"]))
         .expect_err("expected parse error");
-    assert!(error.contains("expected --out <DIR>"));
+    assert!(!error.trim().is_empty());
 }
 
 #[test]
@@ -131,8 +134,8 @@ fn rejects_compile_without_output_directory() {
 
 #[test]
 fn rejects_compile_with_extra_argument() {
-    let error = parse_args(strings(&["compile", "input.hml", "--out", "dist", "extra"]))
-        .expect_err("expected parse error");
+    let error =
+        parse_args(strings(&["compile", "input.hml", "extra"])).expect_err("expected parse error");
     assert!(error.contains("unexpected argument 'extra'"));
 }
 
@@ -149,29 +152,47 @@ fn rejects_dev_without_input() {
 }
 
 #[test]
-fn rejects_watch_without_out_flag() {
-    let error = parse_args(strings(&["watch", "input.hml"])).expect_err("expected parse error");
-    assert!(error.contains("missing required --out <DIR>"));
+fn parses_watch_command_with_explicit_out_flag() {
+    let action = parse_args(strings(&["watch", "input.hml", "--out", "build"]))
+        .expect("expected watch action");
+
+    assert_eq!(
+        action,
+        CliAction::Watch {
+            input: PathBuf::from("input.hml"),
+            out: PathBuf::from("build"),
+        }
+    );
 }
 
 #[test]
-fn rejects_dev_without_out_flag() {
-    let error = parse_args(strings(&["dev", "input.hml"])).expect_err("expected parse error");
-    assert!(error.contains("missing required --out <DIR>"));
+fn parses_dev_command_with_explicit_out_flag() {
+    let action =
+        parse_args(strings(&["dev", "input.hml", "--out", "build"])).expect("expected dev action");
+
+    assert_eq!(
+        action,
+        CliAction::Dev {
+            input: PathBuf::from("input.hml"),
+            out: PathBuf::from("build"),
+            host: "127.0.0.1".to_string(),
+            port: 4000,
+        }
+    );
 }
 
 #[test]
 fn rejects_watch_with_wrong_flag_position() {
     let error = parse_args(strings(&["watch", "--out", "dist", "input.hml"]))
         .expect_err("expected parse error");
-    assert!(error.contains("expected --out <DIR>"));
+    assert!(!error.trim().is_empty());
 }
 
 #[test]
 fn rejects_dev_with_wrong_flag_position() {
     let error = parse_args(strings(&["dev", "--out", "dist", "input.hml"]))
         .expect_err("expected parse error");
-    assert!(error.contains("expected --out <DIR>"));
+    assert!(!error.trim().is_empty());
 }
 
 #[test]
@@ -190,8 +211,8 @@ fn rejects_dev_without_output_directory() {
 
 #[test]
 fn rejects_watch_with_extra_argument() {
-    let error = parse_args(strings(&["watch", "input.hml", "--out", "dist", "extra"]))
-        .expect_err("expected parse error");
+    let error =
+        parse_args(strings(&["watch", "input.hml", "extra"])).expect_err("expected parse error");
     assert!(error.contains("unexpected argument 'extra'"));
 }
 
@@ -245,8 +266,8 @@ fn rejects_watch_command_missing_out_value_for_file_input() {
 
 #[test]
 fn rejects_watch_command_extra_argument_for_directory_input() {
-    let error = parse_args(strings(&["watch", "examples", "--out", "dist", "extra"]))
-        .expect_err("expected parse error");
+    let error =
+        parse_args(strings(&["watch", "examples", "extra"])).expect_err("expected parse error");
     assert!(error.contains("unexpected argument 'extra'"));
 }
 

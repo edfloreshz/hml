@@ -28,8 +28,7 @@ async fn run() -> Result<(), String> {
             out,
             host,
             port,
-            open,
-        } => run_dev(input, out, host, port, open).await,
+        } => run_dev(input, out, host, port).await,
         hml::cli::CliAction::Help => {
             println!("{}", hml::cli::help_text());
             Ok(())
@@ -56,13 +55,7 @@ fn run_watch(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {
     watch_rebuild_loop(&input, &out_dir, |_| Ok(()))
 }
 
-async fn run_dev(
-    input: PathBuf,
-    out_dir: PathBuf,
-    host: String,
-    port: u16,
-    open: bool,
-) -> Result<(), String> {
+async fn run_dev(input: PathBuf, out_dir: PathBuf, host: String, port: u16) -> Result<(), String> {
     let initial_result = compile_once(&input, &out_dir)?;
     dev::inject_live_reload(&initial_result)?;
 
@@ -73,9 +66,7 @@ async fn run_dev(
     println!("[hml] serving {}", out_dir.display());
     println!("[hml] watching {}", input.display());
 
-    if open {
-        open_in_browser(&dev_url)?;
-    }
+    open_in_browser(&dev_url)?;
 
     watch_rebuild_loop(&input, &out_dir, move |result| {
         dev::inject_live_reload(result)?;
