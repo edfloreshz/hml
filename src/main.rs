@@ -1,3 +1,5 @@
+mod dev;
+
 use std::{
     env, fs,
     path::{Path, PathBuf},
@@ -6,7 +8,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use hml::{compile_path_to_dir, format_diagnostic};
+use hml::{CompileDirectoryResult, compile_path_to_dir, format_diagnostic};
 use notify::{Config, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 
 fn main() {
@@ -16,10 +18,18 @@ fn main() {
     }
 }
 
-fn run() -> Result<(), String> {
+#[tokio::main]
+async fn run() -> Result<(), String> {
     match hml::cli::parse_args(env::args().skip(1))? {
         hml::cli::CliAction::Compile { input, out } => run_compile(input, out),
         hml::cli::CliAction::Watch { input, out } => run_watch(input, out),
+        hml::cli::CliAction::Dev {
+            input,
+            out,
+            host,
+            port,
+            open,
+        } => run_dev(input, out, host, port, open).await,
         hml::cli::CliAction::Help => {
             println!("{}", hml::cli::help_text());
             Ok(())
@@ -32,19 +42,58 @@ fn run() -> Result<(), String> {
 }
 
 fn run_compile(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {
-    compile_once(&input, &out_dir)
+    compile_once(&input, &out_dir).map(|_| ())
 }
 
 fn run_watch(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {
-    compile_once(&input, &out_dir)?;
+    compile_once(&input, &out_dir).map(|_| ())?;
 
-    let watch_target = if input.is_dir() {
-        input.clone()
+    println!(
+        "Watching {} for changes. Press Ctrl+C to stop.",
+        input.display()
+    );
+
+    watch_rebuild_loop(&input, &out_dir, |_| Ok(()))
+}
+
+async fn run_dev(
+    input: PathBuf,
+    out_dir: PathBuf,
+    host: String,
+    port: u16,
+    open: bool,
+) -> Result<(), String> {
+    let initial_result = compile_once(&input, &out_dir)?;
+    dev::inject_live_reload(&initial_result)?;
+
+    let (server, address) = dev::DevServer::start(out_dir.clone(), &host, port).await?;
+    let dev_url = format!("http://{}", address);
+
+    println!("[hml] dev server running at {dev_url}");
+    println!("[hml] serving {}", out_dir.display());
+    println!("[hml] watching {}", input.display());
+
+    if open {
+        open_in_browser(&dev_url)?;
+    }
+
+    watch_rebuild_loop(&input, &out_dir, move |result| {
+        dev::inject_live_reload(result)?;
+        server.notify_reload();
+        println!("[hml] reloaded browser");
+        Ok(())
+    })
+}
+
+fn watch_rebuild_loop<F>(input: &Path, out_dir: &Path, mut on_success: F) -> Result<(), String>
+where
+    F: FnMut(&CompileDirectoryResult) -> Result<(), String>,
+{
+    let watch_target = watch_target(input);
+    let recursive_mode = if input.is_dir() {
+        RecursiveMode::Recursive
     } else {
-        input
-            .parent()
-            .map(Path::to_path_buf)
-            .unwrap_or_else(|| PathBuf::from("."))
+        RecursiveMode::NonRecursive
     };
 
     let (tx, rx) = mpsc::channel();
@@ -57,20 +106,8 @@ fn run_watch(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {
     .map_err(|error| format!("failed to initialize file watcher: {error}"))?;
 
     watcher
-        .watch(
-            &watch_target,
-            if input.is_dir() {
-                RecursiveMode::Recursive
-            } else {
-                RecursiveMode::NonRecursive
-            },
-        )
+        .watch(&watch_target, recursive_mode)
         .map_err(|error| format!("failed to watch '{}': {}", watch_target.display(), error))?;
-
-    println!(
-        "Watching {} for changes. Press Ctrl+C to stop.",
-        input.display()
-    );
 
     let mut last_rebuild = Instant::now()
         .checked_sub(Duration::from_secs(1))
@@ -79,7 +116,7 @@ fn run_watch(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {
     loop {
         match rx.recv() {
             Ok(Ok(event)) => {
-                if !event_should_trigger_rebuild(&event, &input) {
+                if !event_should_trigger_rebuild(&event, input) {
                     continue;
                 }
 
@@ -89,9 +126,22 @@ fn run_watch(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {
                 }
                 last_rebuild = now;
 
-                println!("Change detected, rebuilding...");
-                if let Err(error) = compile_once(&input, &out_dir) {
-                    eprintln!("{error}");
+                if let Some(path) = event.paths.first() {
+                    println!("[hml] change detected: {}", path.display());
+                } else {
+                    println!("[hml] change detected");
+                }
+
+                match compile_once(input, out_dir) {
+                    Ok(result) => {
+                        on_success(&result)?;
+                        println!("[hml] watching for changes...");
+                    }
+                    Err(error) => {
+                        eprintln!("[hml] rebuild failed");
+                        eprintln!("{error}");
+                        eprintln!("[hml] waiting for the next change...");
+                    }
                 }
             }
             Ok(Err(error)) => eprintln!("watch error: {error}"),
@@ -100,7 +150,7 @@ fn run_watch(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {
     }
 }
 
-fn compile_once(input: &Path, out_dir: &Path) -> Result<(), String> {
+fn compile_once(input: &Path, out_dir: &Path) -> Result<CompileDirectoryResult, String> {
     let result = compile_path_to_dir(input, out_dir)
         .map_err(|error| format!("failed to compile '{}': {}", input.display(), error))?;
 
@@ -118,7 +168,18 @@ fn compile_once(input: &Path, out_dir: &Path) -> Result<(), String> {
         out_dir.display()
     );
 
-    Ok(())
+    Ok(result)
+}
+
+fn watch_target(input: &Path) -> PathBuf {
+    if input.is_dir() {
+        input.to_path_buf()
+    } else {
+        input
+            .parent()
+            .map(Path::to_path_buf)
+            .unwrap_or_else(|| PathBuf::from("."))
+    }
 }
 
 fn event_should_trigger_rebuild(event: &Event, input: &Path) -> bool {
@@ -159,4 +220,21 @@ fn is_hml_path(path: &Path) -> bool {
         .and_then(|ext| ext.to_str())
         .map(|ext| ext.eq_ignore_ascii_case("hml"))
         .unwrap_or(false)
+}
+
+fn open_in_browser(url: &str) -> Result<(), String> {
+    let command = if cfg!(target_os = "macos") {
+        ("open", vec![url])
+    } else if cfg!(target_os = "windows") {
+        ("cmd", vec!["/C", "start", url])
+    } else {
+        ("xdg-open", vec![url])
+    };
+
+    process::Command::new(command.0)
+        .args(command.1)
+        .spawn()
+        .map_err(|error| format!("failed to open browser at '{url}': {error}"))?;
+
+    Ok(())
 }

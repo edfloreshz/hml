@@ -1,0 +1,294 @@
+Document {
+  Head {
+    Meta[charset: "utf-8"]
+    Meta[name: "viewport", content: "width=device-width, initial-scale=1"]
+    Meta[name: "description", content: "Home page for the HML example gallery"]
+    Title "HML Examples"
+  }
+
+  Body {
+    Box[class: "page"] {
+      min-height: 100vh
+      background: "linear-gradient(180deg, #f8fafc, #e2e8f0)"
+      color: #0f172a
+      padding: 40px
+
+      Header {
+        width: 960px
+        margin: "0 auto"
+        margin-bottom: 32px
+        text-align: center
+
+        Paragraph {
+          font-size: 14px
+          font-weight: 700
+          letter-spacing: 0.08em
+          text-transform: uppercase
+          color: #6366f1
+          margin-bottom: 12px
+
+          "Hypermark Language"
+        }
+
+        H1 {
+          font-size: 56px
+          font-weight: 800
+          line-height: 1.1
+          margin-bottom: 16px
+
+          "Example Pages"
+        }
+
+        Paragraph {
+          font-size: 18px
+          line-height: 1.7
+          color: #475569
+          width: 720px
+          margin: "0 auto"
+
+          "Browse the example documents below to explore different HML layouts, components, and styling patterns."
+        }
+      }
+
+      Main {
+        width: 960px
+        margin: "0 auto"
+
+        Box {
+          display: flex
+          flex-wrap: wrap
+          gap: 24px
+          justify-content: center
+
+          Article {
+            background-color: white
+            border-radius: 20px
+            padding: 28px
+            width: 280px
+            box-shadow: "0 12px 30px rgba(15, 23, 42, 0.08)"
+            border: "1px solid #e2e8f0"
+
+            H2 {
+              font-size: 28px
+              font-weight: 800
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Landing Page"
+            }
+
+            Paragraph {
+              color: #475569
+              line-height: 1.7
+              margin-bottom: 20px
+
+              "A polished product-style homepage with a hero section, feature highlights, and pricing content."
+            }
+
+            Link[href: "landing.html"] {
+              display: inline-block
+              background-color: #4f46e5
+              color: white
+              text-decoration: none
+              padding: 12px
+              border-radius: 10px
+              font-weight: 700
+
+              "Open example"
+            }
+          }
+
+          Article {
+            background-color: white
+            border-radius: 20px
+            padding: 28px
+            width: 280px
+            box-shadow: "0 12px 30px rgba(15, 23, 42, 0.08)"
+            border: "1px solid #e2e8f0"
+
+            H2 {
+              font-size: 28px
+              font-weight: 800
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Blog Layout"
+            }
+
+            Paragraph {
+              color: #475569
+              line-height: 1.7
+              margin-bottom: 20px
+
+              "A content-heavy blog article with a sidebar, callouts, lists, and strong typography styling."
+            }
+
+            Link[href: "blog.html"] {
+              display: inline-block
+              background-color: #4f46e5
+              color: white
+              text-decoration: none
+              padding: 12px
+              border-radius: 10px
+              font-weight: 700
+
+              "Open example"
+            }
+          }
+
+          Article {
+            background-color: white
+            border-radius: 20px
+            padding: 28px
+            width: 280px
+            box-shadow: "0 12px 30px rgba(15, 23, 42, 0.08)"
+            border: "1px solid #e2e8f0"
+
+            H2 {
+              font-size: 28px
+              font-weight: 800
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Article"
+            }
+
+            Paragraph {
+              color: #475569
+              line-height: 1.7
+              margin-bottom: 20px
+
+              "A readable long-form article example focused on structured content and presentation."
+            }
+
+            Link[href: "article.html"] {
+              display: inline-block
+              background-color: #4f46e5
+              color: white
+              text-decoration: none
+              padding: 12px
+              border-radius: 10px
+              font-weight: 700
+
+              "Open example"
+            }
+          }
+
+          Article {
+            background-color: white
+            border-radius: 20px
+            padding: 28px
+            width: 280px
+            box-shadow: "0 12px 30px rgba(15, 23, 42, 0.08)"
+            border: "1px solid #e2e8f0"
+
+            H2 {
+              font-size: 28px
+              font-weight: 800
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Dashboard"
+            }
+
+            Paragraph {
+              color: #475569
+              line-height: 1.7
+              margin-bottom: 20px
+
+              "A dashboard-style interface with panels, metrics, and application-inspired layout structure."
+            }
+
+            Link[href: "dashboard.html"] {
+              display: inline-block
+              background-color: #4f46e5
+              color: white
+              text-decoration: none
+              padding: 12px
+              border-radius: 10px
+              font-weight: 700
+
+              "Open example"
+            }
+          }
+
+          Article {
+            background-color: white
+            border-radius: 20px
+            padding: 28px
+            width: 280px
+            box-shadow: "0 12px 30px rgba(15, 23, 42, 0.08)"
+            border: "1px solid #e2e8f0"
+
+            H2 {
+              font-size: 28px
+              font-weight: 800
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Gallery"
+            }
+
+            Paragraph {
+              color: #475569
+              line-height: 1.7
+              margin-bottom: 20px
+
+              "A visual gallery example showcasing cards, spacing, layout grids, and media-oriented composition."
+            }
+
+            Link[href: "gallery.html"] {
+              display: inline-block
+              background-color: #4f46e5
+              color: white
+              text-decoration: none
+              padding: 12px
+              border-radius: 10px
+              font-weight: 700
+
+              "Open example"
+            }
+          }
+
+          Article {
+            background-color: white
+            border-radius: 20px
+            padding: 28px
+            width: 280px
+            box-shadow: "0 12px 30px rgba(15, 23, 42, 0.08)"
+            border: "1px solid #e2e8f0"
+
+            H2 {
+              font-size: 28px
+              font-weight: 800
+              margin-bottom: 12px
+              color: #0f172a
+
+              "Contact"
+            }
+
+            Paragraph {
+              color: #475569
+              line-height: 1.7
+              margin-bottom: 20px
+
+              "A contact page example with forms, content sections, and practical page-level structure."
+            }
+
+            Link[href: "contact.html"] {
+              display: inline-block
+              background-color: #4f46e5
+              color: white
+              text-decoration: none
+              padding: 12px
+              border-radius: 10px
+              font-weight: 700
+
+              "Open example"
+            }
+          }
+        }
+      }
+    }
+  }
+}

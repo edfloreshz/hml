@@ -68,6 +68,42 @@ fn parses_watch_command() {
 }
 
 #[test]
+fn parses_dev_command() {
+    let action =
+        parse_args(strings(&["dev", "input.hml", "--out", "dist"])).expect("expected dev action");
+
+    assert_eq!(
+        action,
+        CliAction::Dev {
+            input: PathBuf::from("input.hml"),
+            out: PathBuf::from("dist"),
+            host: "127.0.0.1".to_string(),
+            port: 3000,
+            open: false,
+        }
+    );
+}
+
+#[test]
+fn parses_dev_command_with_all_options() {
+    let action = parse_args(strings(&[
+        "dev", "examples", "--out", "dist", "--host", "0.0.0.0", "--port", "4000", "--open",
+    ]))
+    .expect("expected dev action");
+
+    assert_eq!(
+        action,
+        CliAction::Dev {
+            input: PathBuf::from("examples"),
+            out: PathBuf::from("dist"),
+            host: "0.0.0.0".to_string(),
+            port: 4000,
+            open: true,
+        }
+    );
+}
+
+#[test]
 fn rejects_compile_without_input() {
     let error = parse_args(strings(&["compile"])).expect_err("expected parse error");
     assert!(error.contains("missing input path"));
@@ -107,14 +143,33 @@ fn rejects_watch_without_input() {
 }
 
 #[test]
+fn rejects_dev_without_input() {
+    let error = parse_args(strings(&["dev"])).expect_err("expected parse error");
+    assert!(error.contains("missing input path"));
+}
+
+#[test]
 fn rejects_watch_without_out_flag() {
     let error = parse_args(strings(&["watch", "input.hml"])).expect_err("expected parse error");
     assert!(error.contains("missing required --out <DIR>"));
 }
 
 #[test]
+fn rejects_dev_without_out_flag() {
+    let error = parse_args(strings(&["dev", "input.hml"])).expect_err("expected parse error");
+    assert!(error.contains("missing required --out <DIR>"));
+}
+
+#[test]
 fn rejects_watch_with_wrong_flag_position() {
     let error = parse_args(strings(&["watch", "--out", "dist", "input.hml"]))
+        .expect_err("expected parse error");
+    assert!(error.contains("expected --out <DIR>"));
+}
+
+#[test]
+fn rejects_dev_with_wrong_flag_position() {
+    let error = parse_args(strings(&["dev", "--out", "dist", "input.hml"]))
         .expect_err("expected parse error");
     assert!(error.contains("expected --out <DIR>"));
 }
@@ -127,8 +182,22 @@ fn rejects_watch_without_output_directory() {
 }
 
 #[test]
+fn rejects_dev_without_output_directory() {
+    let error =
+        parse_args(strings(&["dev", "input.hml", "--out"])).expect_err("expected parse error");
+    assert!(error.contains("missing output directory after --out"));
+}
+
+#[test]
 fn rejects_watch_with_extra_argument() {
     let error = parse_args(strings(&["watch", "input.hml", "--out", "dist", "extra"]))
+        .expect_err("expected parse error");
+    assert!(error.contains("unexpected argument 'extra'"));
+}
+
+#[test]
+fn rejects_dev_with_extra_argument() {
+    let error = parse_args(strings(&["dev", "input.hml", "--out", "dist", "extra"]))
         .expect_err("expected parse error");
     assert!(error.contains("unexpected argument 'extra'"));
 }
@@ -179,4 +248,27 @@ fn rejects_watch_command_extra_argument_for_directory_input() {
     let error = parse_args(strings(&["watch", "examples", "--out", "dist", "extra"]))
         .expect_err("expected parse error");
     assert!(error.contains("unexpected argument 'extra'"));
+}
+
+#[test]
+fn rejects_dev_with_invalid_port() {
+    let error = parse_args(strings(&[
+        "dev", "examples", "--out", "dist", "--port", "abc",
+    ]))
+    .expect_err("expected parse error");
+    assert!(error.contains("invalid port"));
+}
+
+#[test]
+fn rejects_dev_with_missing_host_value() {
+    let error = parse_args(strings(&["dev", "examples", "--out", "dist", "--host"]))
+        .expect_err("expected parse error");
+    assert!(error.contains("missing host after --host"));
+}
+
+#[test]
+fn rejects_dev_with_missing_port_value() {
+    let error = parse_args(strings(&["dev", "examples", "--out", "dist", "--port"]))
+        .expect_err("expected parse error");
+    assert!(error.contains("missing port after --port"));
 }
