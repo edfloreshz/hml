@@ -67,12 +67,12 @@ fn parses_watch_command() {
 
 #[test]
 fn parses_dev_command() {
-    let action = parse_args(strings(&["dev", "input.hml"])).expect("expected dev action");
+    let action = parse_args(strings(&["dev"])).expect("expected dev action");
 
     assert_eq!(
         action,
         CliAction::Dev {
-            input: PathBuf::from("input.hml"),
+            input: PathBuf::from("."),
             out: PathBuf::from("dist"),
             host: "127.0.0.1".to_string(),
             port: 4000,
@@ -83,14 +83,14 @@ fn parses_dev_command() {
 #[test]
 fn parses_dev_command_with_all_options() {
     let action = parse_args(strings(&[
-        "dev", "examples", "--out", "dist", "--host", "0.0.0.0", "--port", "4000",
+        "dev", "--out", "dist", "--host", "0.0.0.0", "--port", "4000",
     ]))
     .expect("expected dev action");
 
     assert_eq!(
         action,
         CliAction::Dev {
-            input: PathBuf::from("examples"),
+            input: PathBuf::from("."),
             out: PathBuf::from("dist"),
             host: "0.0.0.0".to_string(),
             port: 4000,
@@ -99,9 +99,18 @@ fn parses_dev_command_with_all_options() {
 }
 
 #[test]
-fn rejects_compile_without_input() {
-    let error = parse_args(strings(&["compile"])).expect_err("expected parse error");
-    assert!(error.contains("missing input path"));
+fn parses_dev_command_without_input() {
+    let action = parse_args(strings(&["dev"])).expect("expected dev action");
+
+    assert_eq!(
+        action,
+        CliAction::Dev {
+            input: PathBuf::from("."),
+            out: PathBuf::from("dist"),
+            host: "127.0.0.1".to_string(),
+            port: 4000,
+        }
+    );
 }
 
 #[test]
@@ -140,18 +149,6 @@ fn rejects_compile_with_extra_argument() {
 }
 
 #[test]
-fn rejects_watch_without_input() {
-    let error = parse_args(strings(&["watch"])).expect_err("expected parse error");
-    assert!(error.contains("missing input path"));
-}
-
-#[test]
-fn rejects_dev_without_input() {
-    let error = parse_args(strings(&["dev"])).expect_err("expected parse error");
-    assert!(error.contains("missing input path"));
-}
-
-#[test]
 fn parses_watch_command_with_explicit_out_flag() {
     let action = parse_args(strings(&["watch", "input.hml", "--out", "build"]))
         .expect("expected watch action");
@@ -167,13 +164,12 @@ fn parses_watch_command_with_explicit_out_flag() {
 
 #[test]
 fn parses_dev_command_with_explicit_out_flag() {
-    let action =
-        parse_args(strings(&["dev", "input.hml", "--out", "build"])).expect("expected dev action");
+    let action = parse_args(strings(&["dev", "--out", "build"])).expect("expected dev action");
 
     assert_eq!(
         action,
         CliAction::Dev {
-            input: PathBuf::from("input.hml"),
+            input: PathBuf::from("."),
             out: PathBuf::from("build"),
             host: "127.0.0.1".to_string(),
             port: 4000,
@@ -204,8 +200,7 @@ fn rejects_watch_without_output_directory() {
 
 #[test]
 fn rejects_dev_without_output_directory() {
-    let error =
-        parse_args(strings(&["dev", "input.hml", "--out"])).expect_err("expected parse error");
+    let error = parse_args(strings(&["dev", "--out"])).expect_err("expected parse error");
     assert!(error.contains("missing output directory after --out"));
 }
 
@@ -218,8 +213,8 @@ fn rejects_watch_with_extra_argument() {
 
 #[test]
 fn rejects_dev_with_extra_argument() {
-    let error = parse_args(strings(&["dev", "input.hml", "--out", "dist", "extra"]))
-        .expect_err("expected parse error");
+    let error =
+        parse_args(strings(&["dev", "--out", "dist", "extra"])).expect_err("expected parse error");
     assert!(error.contains("unexpected argument 'extra'"));
 }
 

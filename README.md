@@ -174,12 +174,18 @@ hml watch examples
 Start the dev server with live reload:
 
 ```sh
+hml dev
+```
+
+You can also point it at a specific file or directory:
+
+```sh
 hml dev examples
 ```
 
 The `dev` command serves the compiled output, watches for `.hml` changes, live reloads the browser after successful rebuilds, and opens the browser automatically.
 
-The output directory defaults to `dist`, so `--out` is optional.
+The input path defaults to the current directory, and the output directory defaults to `dist`, so both can be omitted.
 
 You can still override the default output directory:
 

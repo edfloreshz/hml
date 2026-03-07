@@ -69,14 +69,41 @@ pub fn parse_dev_args<I>(mut args: I) -> Result<CliAction, String>
 where
     I: Iterator<Item = String>,
 {
-    let input = args
-        .next()
-        .map(PathBuf::from)
-        .ok_or_else(|| dev_usage("missing input path"))?;
-
+    let mut input = PathBuf::from(".");
     let mut out = PathBuf::from("dist");
     let mut host = String::from("127.0.0.1");
     let mut port = 4000;
+
+    if let Some(arg) = args.next() {
+        if arg.starts_with("--") {
+            match arg.as_str() {
+                "--out" => {
+                    out = args
+                        .next()
+                        .map(PathBuf::from)
+                        .ok_or_else(|| dev_usage("missing output directory after --out"))?;
+                }
+                "--host" => {
+                    host = args
+                        .next()
+                        .ok_or_else(|| dev_usage("missing host after --host"))?;
+                }
+                "--port" => {
+                    let value = args
+                        .next()
+                        .ok_or_else(|| dev_usage("missing port after --port"))?;
+                    port = value
+                        .parse::<u16>()
+                        .map_err(|_| dev_usage(&format!("invalid port '{value}'")))?;
+                }
+                extra => {
+                    return Err(dev_usage(&format!("unexpected argument '{extra}'")));
+                }
+            }
+        } else {
+            input = PathBuf::from(arg);
+        }
+    }
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -124,7 +151,7 @@ pub fn help_text() -> String {
 USAGE:
     {name} compile <INPUT> [--out <DIR>]
     {name} watch <INPUT> [--out <DIR>]
-    {name} dev <INPUT> [--out <DIR>] [--host <HOST>] [--port <PORT>]
+    {name} dev [INPUT] [--out <DIR>] [--host <HOST>] [--port <PORT>]
 
 COMMANDS:
     compile    Compile a single .hml file or a directory of .hml files
@@ -150,7 +177,7 @@ pub fn watch_usage(message: &str) -> String {
 
 pub fn dev_usage(message: &str) -> String {
     format!(
-        "{message}\n\nUSAGE:\n    hml dev <INPUT> [--out <DIR>] [--host <HOST>] [--port <PORT>]"
+        "{message}\n\nUSAGE:\n    hml dev [INPUT] [--out <DIR>] [--host <HOST>] [--port <PORT>]"
     )
 }
 

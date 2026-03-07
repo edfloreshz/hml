@@ -66,7 +66,7 @@ impl DevServer {
         let app = Router::new()
             .route(LIVE_RELOAD_PATH, get(live_reload))
             .route("/", get(serve_index))
-            .route("/*path", get(serve_path))
+            .route("/{*path}", get(serve_path))
             .with_state(state);
 
         tokio::spawn(async move {
