@@ -29,6 +29,7 @@ async fn run() -> Result<(), String> {
             host,
             port,
         } => run_dev(input, out, host, port).await,
+        hml::cli::CliAction::Lsp => run_lsp().await,
         hml::cli::CliAction::Help => {
             println!("{}", hml::cli::help_text());
             Ok(())
@@ -38,6 +39,17 @@ async fn run() -> Result<(), String> {
             Ok(())
         }
     }
+}
+
+async fn run_lsp() -> Result<(), String> {
+    use tokio::io::{stdin, stdout};
+    use tower_lsp::LspService;
+    use tower_lsp::Server;
+
+    let (service, socket) = LspService::new(hml::lsp::HmlLanguageServer::new);
+    Server::new(stdin(), stdout(), socket).serve(service).await;
+
+    Ok(())
 }
 
 fn run_compile(input: PathBuf, out_dir: PathBuf) -> Result<(), String> {

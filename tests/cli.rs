@@ -16,6 +16,12 @@ fn parses_help_when_no_args_are_provided() {
 }
 
 #[test]
+fn parses_lsp_command() {
+    let action = parse_args(strings(&["lsp"])).expect("expected lsp action");
+    assert_eq!(action, CliAction::Lsp);
+}
+
+#[test]
 fn parses_help_flag() {
     let action = parse_args(strings(&["--help"])).expect("expected help action");
     assert_eq!(action, CliAction::Help);
@@ -189,6 +195,12 @@ fn rejects_dev_with_wrong_flag_position() {
     let error = parse_args(strings(&["dev", "--out", "dist", "input.hml"]))
         .expect_err("expected parse error");
     assert!(!error.trim().is_empty());
+}
+
+#[test]
+fn rejects_lsp_with_extra_argument() {
+    let error = parse_args(strings(&["lsp", "extra"])).expect_err("expected parse error");
+    assert!(error.contains("unexpected argument 'extra'"));
 }
 
 #[test]

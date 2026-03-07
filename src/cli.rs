@@ -16,6 +16,7 @@ pub enum CliAction {
         host: String,
         port: u16,
     },
+    Lsp,
     Help,
     Version,
 }
@@ -30,6 +31,7 @@ where
         Some("compile") => parse_compile_args(args),
         Some("watch") => parse_watch_args(args),
         Some("dev") => parse_dev_args(args),
+        Some("lsp") => parse_lsp_args(args),
         Some("--help") | Some("-h") => Ok(CliAction::Help),
         Some("--version") | Some("-V") => Ok(CliAction::Version),
         Some(command) => Err(format!("unknown command '{command}'\n\n{}", help_text())),
@@ -152,11 +154,13 @@ USAGE:
     {name} compile <INPUT> [--out <DIR>]
     {name} watch <INPUT> [--out <DIR>]
     {name} dev [INPUT] [--out <DIR>] [--host <HOST>] [--port <PORT>]
+    {name} lsp
 
 COMMANDS:
     compile    Compile a single .hml file or a directory of .hml files
     watch      Watch a single .hml file or directory and recompile on changes
     dev        Watch, serve, and live reload compiled output during development
+    lsp        Start the HML language server over stdin/stdout
 
 OPTIONS:
     -h, --help       Print help
@@ -179,6 +183,21 @@ pub fn dev_usage(message: &str) -> String {
     format!(
         "{message}\n\nUSAGE:\n    hml dev [INPUT] [--out <DIR>] [--host <HOST>] [--port <PORT>]"
     )
+}
+
+pub fn lsp_usage(message: &str) -> String {
+    format!("{message}\n\nUSAGE:\n    hml lsp")
+}
+
+pub fn parse_lsp_args<I>(mut args: I) -> Result<CliAction, String>
+where
+    I: Iterator<Item = String>,
+{
+    if let Some(extra) = args.next() {
+        return Err(lsp_usage(&format!("unexpected argument '{extra}'")));
+    }
+
+    Ok(CliAction::Lsp)
 }
 
 fn parse_simple_out_args<I>(args: &mut I, usage: fn(&str) -> String) -> Result<PathBuf, String>
